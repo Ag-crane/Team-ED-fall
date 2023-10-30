@@ -34,10 +34,10 @@ async function getRoomData(id) {
 async function createRoomTables() {
   // MySQL 데이터베이스 연결 설정
   const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "mysql.7603",
-    database: "team_ed_fall",
+    host: "database-1.cpo45tam9snf.ap-northeast-2.rds.amazonaws.com",
+    user: "admin",
+    password: "Abcd123!",
+    database: "hapjusil",
   });
 
   try {
@@ -46,22 +46,30 @@ async function createRoomTables() {
       "SELECT bookingBusinessId FROM pr_hasbooking"
     );
 
+    await connection.execute(`
+    CREATE TABLE IF NOT EXISTS roomDatas(
+      prID VARCHAR(255),
+      id VARCHAR(255) PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      price INT
+    )`);
+
     // 각 ID에 대해 getRoomData 함수 실행
     for (const row of rows) {
-      const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS PR${row.bookingBusinessId} (
-        id VARCHAR(255) PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        price INT
-      )
-    `;
-      await connection.execute(createTableQuery);
+      // await connection.execute(createTableQuery);
 
       const data = await getRoomData(row.bookingBusinessId);
       for (const room of data) {
         await connection.execute(
-          `INSERT INTO PR${row.bookingBusinessId} (id, name, price) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE name = ?, price = ?`,
-          [room.id, room.name, room.price, room.name, room.price]
+          `INSERT INTO roomDatas (prID, id, name, price) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = ?, price = ?`,
+          [
+            row.bookingBusinessId,
+            room.id,
+            room.name,
+            room.price,
+            room.name,
+            room.price,
+          ]
         );
       }
     }
