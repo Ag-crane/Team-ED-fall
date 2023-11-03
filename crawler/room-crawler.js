@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const mysql = require("mysql2/promise");
 
 const axios = require("axios");
@@ -31,14 +33,16 @@ async function getRoomData(id) {
 
 // getRoomData(329314).then(console.log)
 
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+};
+
 async function createRoomTables() {
   // MySQL 데이터베이스 연결 설정
-  const connection = await mysql.createConnection({
-    host: "database-1.cpo45tam9snf.ap-northeast-2.rds.amazonaws.com",
-    user: "admin",
-    password: "Abcd123!",
-    database: "hapjusil",
-  });
+  const connection = await mysql.createConnection(dbConfig);
 
   try {
     // ID 값을 가져오는 쿼리

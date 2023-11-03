@@ -1,4 +1,13 @@
-const puppeteer = require('puppeteer')
+const mysql = require("mysql2/promise");
+const puppeteer = require("puppeteer");
+
+require("dotenv").config();
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+};
 
 async function getStartDate(page) {
   const startDate = await page.$$eval(
@@ -83,4 +92,11 @@ async function getAvailableTime(prId, roomId, date) {
 
   return availableTimes;
 }
-getAvailableTime(329314, 3355287, 5).then(console.log);
+  const connection = await mysql.createConnection(dbConfig);
+
+  await connection.execute(`
+  CREATE TABLE IF NOT EXISTS reservation_datas(
+    room_id INT NOT NULL,
+    available_time DATETIME NOT NULL,
+    PRIMARY KEY (room_id, available_time)
+  )`);
