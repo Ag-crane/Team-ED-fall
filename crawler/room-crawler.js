@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const mysql = require("mysql2/promise");
-
 const axios = require("axios");
 const cheerio = require("cheerio");
 const vm = require("vm");
@@ -51,21 +50,21 @@ async function createRoomTables() {
     );
 
     await connection.execute(`
-    CREATE TABLE IF NOT EXISTS roomDatas(
-      prID VARCHAR(255),
-      id VARCHAR(255) PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
+    CREATE TABLE IF NOT EXISTS room_datas(
+      pr_id INT NOT NULL,
+      room_id INT NOT NULL PRIMARY KEY,
+      name VARCHAR(255),
       price INT
     )`);
 
-    // 각 ID에 대해 getRoomData 함수 실행
+    // 각 합주실에 대해
     for (const row of rows) {
-      // await connection.execute(createTableQuery);
 
+      // 각 룸에 대해
       const data = await getRoomData(row.bookingBusinessId);
       for (const room of data) {
         await connection.execute(
-          `INSERT INTO roomDatas (prID, id, name, price) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = ?, price = ?`,
+          `INSERT INTO room_datas (pr_id, room_id, name, price) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = ?, price = ?`,
           [
             row.bookingBusinessId,
             room.id,
@@ -81,8 +80,8 @@ async function createRoomTables() {
     console.error("Error fetching data from the database:", error);
   } finally {
     // 데이터베이스 연결 종료
-    if (connection && connection.end) connection.end();
+    if (connection && connection.end) await connection.end();
   }
 }
 
-createRoomTables();
+createRoomTables().catch(console.error);
