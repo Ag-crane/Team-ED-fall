@@ -17,9 +17,8 @@ async function getStartDate(page) {
   console.log("현재 날짜 : ", startDate);
 }
 
-async function getAvailableTime(prId, roomId, date) {
-  const browser = await puppeteer.launch();
-  var page = await browser.newPage();
+async function getAvailableTime(browser, prId, roomId, date) {
+  const page = await browser.newPage();
 
   const url = `https://m.booking.naver.com/booking/10/bizes/${prId}/items/${roomId}`;
 
@@ -101,7 +100,7 @@ async function getAvailableTime(prId, roomId, date) {
     (time) => `${selectedDate} ${time}`
   );
 
-  await browser.close();
+  await page.close();
 
   return datetimeValues;
 }
@@ -112,7 +111,15 @@ async function getAvailableTime(prId, roomId, date) {
 // }
 // main();
 
+function delay(time) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, time);
+  });
+}
+
 async function getDataAndInsert() {
+  const browser = await puppeteer.launch();
+
   const connection = await mysql.createConnection(dbConfig);
 
   await connection.execute(`
@@ -126,30 +133,51 @@ async function getDataAndInsert() {
     const [rows] = await connection.execute(
       "SELECT pr_id, room_id FROM room_datas"
     );
-    for (const row of rows) {
-      //룸별
+    const reverseRows = rows.reverse();
+    let count = 1;
+    for (const row of reverseRows) {
       for (let date = 1; date <= 30; date++) {
-        //날짜별  // 임시로 1~30만 처리
-        const availableTimes = await getAvailableTime(
-          row.pr_id,
-          row.room_id,
-          date
-        );
-
-        for (const time of availableTimes) {
-          await connection.execute(
-            `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
-            [row.room_id, time, time]
-          );
+        // 재시도 및 딜레이 로직 추가
+        let attempt = 1;
+        while (attempt < 5) {
+          try {
+            const availableTimes = await getAvailableTime(
+              browser,
+              row.pr_id,
+              row.room_id,
+              date
+            );
+            for (const time of availableTimes) {
+              await connection.execute(
+                `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
+                [row.room_id, time, time]
+              );
+            }
+            console.log(count, "room : ", row.room_id, "날짜 : ", date);
+            break; // 성공할 경우 while문 탈출
+          } catch (error) {
+            console.log(
+              "Attempt",
+              attempt,
+              "failed for room:",
+              row.room_id,
+              "Date:",
+              date
+            );
+            attempt++;
+            await delay(30000); // 대기 후 재시도
+          }
         }
-        console.log("room : ", row.room_id, "날짜 : ", date);
+        await delay(3000); // 다음 요청 전에 대기
       }
+      count++;
     }
   } catch (err) {
     console.error("Error:", err);
   } finally {
     await connection.end();
+    await browser.close();
   }
 }
 
-getDataAndInsert();
+// getDataAndInsert();
