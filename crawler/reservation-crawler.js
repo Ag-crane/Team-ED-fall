@@ -213,4 +213,16 @@ async function getDataAndInsert() {
   }
 }
 
-// getDataAndInsert();
+async function main() {
+  // 실행 시간 측정
+  const start = new Date();
+  const browser = await puppeteer.launch();
+  const result = await getAvailableTime(browser, 329314, 3355287, "2023-12-12");
+  console.log(result);
+  await browser.close();
+  // await getDataAndInsert();
+  const end = new Date();
+  console.log("소요 시간 : ", end - start);
+}
+main();
+
