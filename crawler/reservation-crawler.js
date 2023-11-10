@@ -151,7 +151,7 @@ function delay(time) {
 }
 
 async function getDataAndInsert() {
-  const browser = await puppeteer.launch();
+  let browser = await puppeteer.launch();
 
   const connection = await mysql.createConnection(dbConfig);
 
@@ -198,6 +198,8 @@ async function getDataAndInsert() {
               date
             );
             attempt++;
+            await browser.close();
+            browser = await puppeteer.launch();
             await delay(30000); // 대기 후 재시도
           }
         }
