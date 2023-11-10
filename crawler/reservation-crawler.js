@@ -114,11 +114,35 @@ async function getAvailableTime(browser, prId, roomId, date) {
   return datetimeValues;
 }
 
-// async function main() {
-//   const result = await getAvailableTime(329314, 3355287, 5);
-//   console.log(result);
-// }
-// main();
+
+// 날짜 형식맞추기
+function formatDate(date) {
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+
+  // 월과 일이 10보다 작으면 앞에 0 붙이기
+  day = day < 10 ? "0" + day : day;
+  month = month < 10 ? "0" + month : month;
+
+  return `${year}-${month}-${day}`;
+}
+
+// 내일 날짜부터 30일 간의 날짜를 반환
+function getNextDays(days = 30) {
+  let dates = [];
+  let currentDate = new Date();
+
+  // 날짜를 1일 더해 내일 날짜를 설정
+  currentDate.setDate(currentDate.getDate() + 1);
+
+  for (let i = 0; i < days; i++) {
+    dates.push(formatDate(currentDate)); // 배열에 날짜를 포맷하여 추가
+    currentDate.setDate(currentDate.getDate() + 1); // 다음 날짜를 위해 현재 날짜를 1일 증가
+  }
+
+  return dates;
+}
 
 function delay(time) {
   return new Promise(function (resolve) {
