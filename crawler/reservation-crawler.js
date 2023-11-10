@@ -10,9 +10,9 @@ const dbConfig = {
 };
 
 async function getStartDate(page) {
-  const startDate = await page.$$eval(
-    'td[class*="calendar-selected start-day"] span[class="num"]',
-    (elements) => elements[0].textContent
+  const startDate = await page.$eval(
+    'td[class*="calendar-selected start-day"]',
+    (element) => element.getAttribute("data-cal-datetext")
   );
   console.log("현재 날짜 : ", startDate);
 }
@@ -32,33 +32,21 @@ async function getAvailableTime(browser, prId, roomId, date) {
   const url = `https://m.booking.naver.com/booking/10/bizes/${prId}/items/${roomId}`;
 
   await page.goto(url, {
-    waitUntil: "networkidle0",
-    timeout: 60000,
+    waitUntil: "networkidle2",
+    timeout: 30000,
   });
 
-  await page.waitForSelector('a[class="calendar-date"] > span[class="num"]');
-
   // 디버깅용 - puppeteer 브라우저 안에서 console.log 실행
-  page.on("console", (msg) => console.log(msg.text()));
+  // page.on("console", (msg) => console.log(msg.text()));
 
-  // // 현재 날짜 확인
   // await getStartDate(page);
 
-  // 타겟 날짜가 달력에 있는지 먼저 확인
-  let targetDateElement = await page.$$eval(
-    'td:not(.calendar-unselectable) > a[class="calendar-date"] > span[class="num"]',
-    (elements, date) => {
-      const targetElement = elements.find((el) => el.textContent == date);
-      return targetElement ? targetElement.outerHTML : null;
-    },
-    date
+  let targetDateElement = await page.$(
+    `td:not(.calendar-unselectable)[data-cal-datetext="${date}"]`
   );
-
-  if (targetDateElement) {
-    // console.log("Element found");
-  } else {
-    // console.log("Element not found");
+  if (!targetDateElement) {
     // console.log("달력 넘기기");
+    await page.waitForSelector('a[title="다음 달"]');
     await page.evaluate(() => {
       const nextMonthButton = document.querySelector('a[title="다음 달"]');
       nextMonthButton.click();
@@ -69,32 +57,17 @@ async function getAvailableTime(browser, prId, roomId, date) {
     // console.log("달력 넘기기 성공");
   }
 
-  // 타겟 날짜 재설정
-  targetDateElement = await page.$$eval(
-    'td:not(.calendar-unselectable) > a[class="calendar-date"] > span[class="num"]',
-    (elements, date) => {
-      const targetElement = elements.find((el) => el.textContent == date);
-      return targetElement ? targetElement.outerHTML : null;
-    },
-    date
-  );
-
-  // console.log(targetDateElement);
-  await page.$$eval(
-    'td:not(.calendar-unselectable) > a[class="calendar-date"] > span[class="num"]',
-    (elements, date) => {
-      const targetElement = elements.find((el) => el.textContent == date);
-      targetElement.click();
-    },
-    date
+  await page.$eval(
+    `td:not(.calendar-unselectable)[data-cal-datetext="${date}"] > a`,
+    (element) => element.click()
   );
   await page.waitForTimeout(100);
-  // // 선택 후 현재 날짜 확인
+
   // await getStartDate(page);
 
   // 선택한 날짜 저장
   const selectedDate = await page.$eval(
-    'td[class*="calendar-selected"][class*="start-day"][data-cal-datetext]',
+    'td[class*="calendar-selected"][class*="start-day"]',
     (element) => element.getAttribute("data-cal-datetext")
   );
 
@@ -167,9 +140,10 @@ async function getDataAndInsert() {
       "SELECT pr_id, room_id FROM room_datas"
     );
     const reverseRows = rows.reverse();
+    const dates = getNextDays();
     let count = 1;
     for (const row of reverseRows) {
-      for (let date = 1; date <= 30; date++) {
+      for (const date of dates) {
         // 재시도 및 딜레이 로직 추가
         let attempt = 1;
         while (attempt < 5) {
@@ -186,9 +160,9 @@ async function getDataAndInsert() {
                 [row.room_id, time, time]
               );
             }
-            console.log(count, "room : ", row.room_id, "날짜 : ", date);
+            console.log("Num : ", count, "roomID : ", row.room_id, "날짜 : ", date);
             break; // 성공할 경우 while문 탈출
-          } catch (error) {
+          } catch{
             console.log(
               "Attempt",
               attempt,
@@ -203,7 +177,7 @@ async function getDataAndInsert() {
             await delay(30000); // 대기 후 재시도
           }
         }
-        await delay(3000); // 다음 요청 전에 대기
+        await delay(5000); // 다음 요청 전에 대기
       }
       count++;
     }
