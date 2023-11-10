@@ -15,12 +15,12 @@ function ListCard({ title, content, cost, locate }) {
       <div className="title_box">
         <div className="card1">
           <div className="card_title">{title}</div>
-          <div className="card_cost">{cost}</div>
+          {/* <div className="card_cost">{cost}</div> */}
         </div>
         <div className="card2">
           <div className="card_locate">
-            <FontAwesomeIcon icon={faMapMarkerAlt} />
-            {locate}
+            <FontAwesomeIcon icon={faMapMarkerAlt} fontSize={15} />
+             {locate}
           </div>
           <div
             className={`card_heart ${isFavorite ? "active" : ""}`}
