@@ -20,6 +20,15 @@ async function getStartDate(page) {
 async function getAvailableTime(browser, prId, roomId, date) {
   const page = await browser.newPage();
 
+  // 리소스 로드 제어 - 이미지, 스타일시트, 폰트 등은 로드하지 않음
+  await page.setRequestInterception(true);
+  page.on("request", (req) => {
+    if (["image", "stylesheet", "font"].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
   const url = `https://m.booking.naver.com/booking/10/bizes/${prId}/items/${roomId}`;
 
   await page.goto(url, {
