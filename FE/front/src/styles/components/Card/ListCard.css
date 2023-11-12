@@ -28,14 +28,14 @@
   text-align: center;
 }
 
-.card_cost {
+.card_rating {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding-right: 17px;
-  width: 35%;
+  width: 20%;
   height: 100%;
-  font-size: 15px;
+  font-size: 13px;
   margin-left: 10px;
   text-align: center;
 }
