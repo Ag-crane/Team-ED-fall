@@ -181,7 +181,7 @@ async function getDataAndInsert(date) {
           attempt++;
           await browser.close();
           browser = await puppeteer.launch();
-          await delay(30000); // 대기 후 재시도
+          await delay(10000); // 대기 후 재시도
         }
       }
       await delay(1000); // 다음 요청 전에 대기
@@ -199,53 +199,48 @@ async function getDataAndInsert(date) {
 async function getMonthlyData(prId, roomId) {
   let browser = await puppeteer.launch();
   const connection = await mysql.createConnection(dbConfig);
-  try {
-    const dates = getNextDays();
-    let count = 1;
-    for (const date of dates) {
-      let attempt = 1;
-      while (attempt < 5) {
-        try {
-          const availableTimes = await getAvailableTime(
-            browser,
-            prId,
-            roomId,
-            date
+  const dates = getNextDays();
+  let count = 1;
+  for (const date of dates) {
+    let attempt = 1;
+    while (attempt < 5) {
+      try {
+        const availableTimes = await getAvailableTime(
+          browser,
+          prId,
+          roomId,
+          date
+        );
+        for (const time of availableTimes) {
+          await connection.execute(
+            `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
+            [roomId, time, time]
           );
-          for (const time of availableTimes) {
-            await connection.execute(
-              `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
-              [roomId, time, time]
-            );
-          }
-          console.log("Num : ", count, "roomID : ", roomId, "날짜 : ", date);
-          break; // 성공할 경우 while문 탈출
-        } catch {
-          console.log(
-            "Attempt",
-            attempt,
-            "failed for room:",
-            roomId,
-            "Date:",
-            date
-          );
-          attempt++;
-          await browser.close();
-          browser = await puppeteer.launch();
-          await delay(30000); // 대기 후 재시도
         }
+        console.log("Num : ", count, "roomID : ", roomId, "날짜 : ", date);
+        break; // 성공할 경우 while문 탈출
+      } catch {
+        console.log(
+          "Attempt",
+          attempt,
+          "failed for room:",
+          roomId,
+          "Date:",
+          date
+        );
+        attempt++;
+        await browser.close();
+        browser = await puppeteer.launch();
+        await delay(30000); // 대기 후 재시도
       }
-      await delay(6000); // 다음 요청 전에 대기
-      count++;
     }
-  } catch (err) {
-    console.error("Error:", err);
-  } finally {
-    await connection.end();
-    await browser.close();
+    await delay(6000); // 다음 요청 전에 대기
+    count++;
   }
+  await connection.end();
+  await browser.close();
 }
 
 // 함수 전체를 export
-export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId };
+export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId, delay };
 export default dbConfig;

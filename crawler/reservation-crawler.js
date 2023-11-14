@@ -1,19 +1,17 @@
-import { getAvailableTime, getDataAndInsert, getMonthlyData } from "./module.js";
+import { getMonthlyData } from "./module.js";
 
-
-
-
-
-async function main() {
-  // 실행 시간 측정
-  const start = new Date();
-  // const browser = await puppeteer.launch();
-  // const result = await getAvailableTime(browser, 329314, 3355287, "2023-12-12");
-  // console.log(result);
-  // await browser.close();
-  // await getDataAndInsert("2023-11-15");
-  await getMonthlyData(331813,3361583);
-  const end = new Date();
-  console.log("소요 시간 : ", end - start);
-}
-main();
+process.on('message', async (pairList) => {
+    const startTime = Date.now();
+    for (let pair of pairList) {
+        try {
+            await getMonthlyData(pair.pr_id, pair.room_id);
+            process.send({ success: true, prId: pair.pr_id, roomId: pair.room_id });
+        } catch (error) {
+            process.send({ success: false, prId: pair.pr_id, roomId: pair.room_id, error: error.message });
+        }
+    }
+    const endTime = Date.now(); // 작업 종료 시간 기록
+    const duration = endTime - startTime; // 소요 시간 계산
+    process.send({duration: duration})
+    process.exit();
+});
