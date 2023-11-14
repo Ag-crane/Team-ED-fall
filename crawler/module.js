@@ -16,6 +16,24 @@ async function getStartDate(page) {
   );
   console.log("현재 날짜 : ", startDate);
 }
+async function setCalendar(page, date) {
+  let targetDateElement = null;
+  while (!targetDateElement) {
+    targetDateElement = await page.$(
+      `td:not(.calendar-unselectable)[data-cal-datetext="${date}"]`
+    );
+    if (!targetDateElement) {
+      await page.waitForSelector('a[title="다음 달"]');
+      await page.evaluate(() => {
+        const nextMonthButton = document.querySelector('a[title="다음 달"]');
+        nextMonthButton.click();
+      });
+      await page.waitForSelector(
+        'td:not(.calendar-unselectable)'
+      );
+    }
+  }
+}
 
 async function getAvailableTime(browser, prId, roomId, date) {
   const page = await browser.newPage();
@@ -33,29 +51,11 @@ async function getAvailableTime(browser, prId, roomId, date) {
 
   await page.goto(url, {
     waitUntil: "networkidle2",
-    timeout: 30000,
+    timeout: 10000,
   });
+  await page.waitForSelector('td:not(.calendar-unselectable)')
 
-  // 디버깅용 - puppeteer 브라우저 안에서 console.log 실행
-  // page.on("console", (msg) => console.log(msg.text()));
-
-  // await getStartDate(page);
-
-  let targetDateElement = await page.$(
-    `td:not(.calendar-unselectable)[data-cal-datetext="${date}"]`
-  );
-  if (!targetDateElement) {
-    // console.log("달력 넘기기");
-    await page.waitForSelector('a[title="다음 달"]');
-    await page.evaluate(() => {
-      const nextMonthButton = document.querySelector('a[title="다음 달"]');
-      nextMonthButton.click();
-    });
-    await page.waitForSelector(
-      'td:not(.calendar-unselectable) > a[class="calendar-date"] > span[class="num"]'
-    );
-    // console.log("달력 넘기기 성공");
-  }
+  await setCalendar(page, date);
 
   await page.$eval(
     `td:not(.calendar-unselectable)[data-cal-datetext="${date}"] > a`,
@@ -63,9 +63,6 @@ async function getAvailableTime(browser, prId, roomId, date) {
   );
   await page.waitForTimeout(100);
 
-  // await getStartDate(page);
-
-  // 선택한 날짜 저장
   const selectedDate = await page.$eval(
     'td[class*="calendar-selected"][class*="start-day"]',
     (element) => element.getAttribute("data-cal-datetext")
@@ -203,7 +200,7 @@ async function getMonthlyData(prId, roomId) {
   let count = 1;
   for (const date of dates) {
     let attempt = 1;
-    while (attempt < 5) {
+    while (attempt <= 3) {
       try {
         const availableTimes = await getAvailableTime(
           browser,
@@ -211,30 +208,27 @@ async function getMonthlyData(prId, roomId) {
           roomId,
           date
         );
-        for (const time of availableTimes) {
-          await connection.execute(
+        // 모든 시간을 한 번에 데이터베이스에 삽입
+        const queries = availableTimes.map(time => 
+          connection.execute(
             `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
             [roomId, time, time]
-          );
-        }
+          )
+        );
+        await Promise.all(queries);
+        
         console.log("Num : ", count, "roomID : ", roomId, "날짜 : ", date);
         break; // 성공할 경우 while문 탈출
-      } catch {
-        console.log(
-          "Attempt",
-          attempt,
-          "failed for room:",
-          roomId,
-          "Date:",
-          date
-        );
+      } catch(error) {
+        console.error(`Attempt ${attempt} failed for room: ${roomId}, Date: ${date}`);
+        if (attempt === 3) {
+          console.error("Final attempt failed, moving to next date:", error);
+        }
         attempt++;
-        await browser.close();
-        browser = await puppeteer.launch();
-        await delay(30000); // 대기 후 재시도
+        await delay(10000); // 대기 후 재시도
       }
     }
-    await delay(6000); // 다음 요청 전에 대기
+    await delay(1000); // 다음 요청 전에 대기
     count++;
   }
   await connection.end();
