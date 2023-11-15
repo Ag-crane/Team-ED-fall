@@ -17,19 +17,19 @@ function About() {
   useEffect(() => {
     async function fetchCardData() {
       try {
-        const response = await fetch("../practiceRooms.json");
+        const response = await fetch("http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=0&size=8");
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        setCardData(data);
-
+        
         const uniqueAddresses = [
           ...new Set(data.map((card) => card.commonAddress.trim())),
         ];
         uniqueAddresses.sort((a, b) => a.localeCompare(b));
 
         setUniqueCommonAddresses(uniqueAddresses);
+        setCardData(data);
         setFilteredCardData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
