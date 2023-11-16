@@ -64,4 +64,5 @@ public class PrHasBooking {
 
     @Column(name = "blogCafeReviewCount")
     private String blogCafeReviewCount;
+
 }
