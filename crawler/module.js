@@ -1,6 +1,13 @@
 import mysql from "mysql2/promise";
 import puppeteer from "puppeteer";
-import "dotenv/config";
+import path from 'path';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -28,9 +35,7 @@ async function setCalendar(page, date) {
         const nextMonthButton = document.querySelector('a[title="다음 달"]');
         nextMonthButton.click();
       });
-      await page.waitForSelector(
-        'td:not(.calendar-unselectable)'
-      );
+      await page.waitForSelector("td:not(.calendar-unselectable)");
     }
   }
 }
@@ -209,6 +214,7 @@ async function getMonthlyData(prId, roomId) {
           date
         );
         // 모든 시간을 한 번에 데이터베이스에 삽입
+
         const queries = availableTimes.map(time => 
           connection.execute(
             `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
@@ -216,25 +222,39 @@ async function getMonthlyData(prId, roomId) {
           )
         );
         await Promise.all(queries);
-        
+
         console.log("Num : ", count, "roomID : ", roomId, "날짜 : ", date);
         break; // 성공할 경우 while문 탈출
-      } catch(error) {
-        console.error(`Attempt ${attempt} failed for room: ${roomId}, Date: ${date}`);
+      } catch {
+        console.error(
+          `Attempt ${attempt} failed for room: ${roomId}, Date: ${date}`
+        );
         if (attempt === 3) {
-          console.error("Final attempt failed, moving to next date:", error);
+          console.error("Final attempt failed, moving to next date:");
         }
         attempt++;
         await delay(10000); // 대기 후 재시도
       }
     }
-    await delay(1000); // 다음 요청 전에 대기
+    await delay(2000); // 다음 요청 전에 대기
     count++;
   }
   await connection.end();
   await browser.close();
 }
 
-// 함수 전체를 export
-export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId, delay };
+
+function splitArrayIntoChunks(array, numberOfChunks) {
+  let result = [];
+  let chunkSize = Math.ceil(array.length / numberOfChunks);
+
+  for (let i = 0; i < array.length; i += chunkSize) {
+      let chunk = array.slice(i, i + chunkSize);
+      result.push(chunk);
+  }
+
+  return result;
+}
+
+export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId, delay, splitArrayIntoChunks };
 export default dbConfig;

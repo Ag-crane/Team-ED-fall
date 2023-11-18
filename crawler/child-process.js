@@ -1,5 +1,7 @@
 import { getRoomId } from "./module.js";
 import { fork } from "child_process";
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 function splitArrayIntoChunks(array, numberOfChunks) {
     let result = [];
@@ -15,11 +17,18 @@ function splitArrayIntoChunks(array, numberOfChunks) {
 
 
 const roomIds = await getRoomId();
-const chunks = splitArrayIntoChunks(roomIds, 3);
+const chunks = splitArrayIntoChunks(roomIds, 5);
 // console.log(chunks)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const startTime = new Date
+console.log("startTime: ",startTime)
 
 chunks.forEach(chunk => {
-	const child = fork('reservation-crawler.js');
+
+	const child = fork(path.join(__dirname, 'reservation-crawler.js'));
+
 	child.send(chunk);
 
 	child.on('message', (result) => {
