@@ -235,6 +235,18 @@ async function getMonthlyData(prId, roomId) {
   await browser.close();
 }
 
+function splitArrayIntoChunks(array, numberOfChunks) {
+  let result = [];
+  let chunkSize = Math.ceil(array.length / numberOfChunks);
+
+  for (let i = 0; i < array.length; i += chunkSize) {
+      let chunk = array.slice(i, i + chunkSize);
+      result.push(chunk);
+  }
+
+  return result;
+}
+
 // 함수 전체를 export
-export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId, delay };
+export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId, delay, splitArrayIntoChunks };
 export default dbConfig;

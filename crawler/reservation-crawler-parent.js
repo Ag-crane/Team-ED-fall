@@ -1,17 +1,5 @@
-import { getRoomId } from "./module.js";
+import { splitArrayIntoChunks, getRoomId } from "./module.js";
 import { fork } from "child_process";
-
-function splitArrayIntoChunks(array, numberOfChunks) {
-    let result = [];
-    let chunkSize = Math.ceil(array.length / numberOfChunks);
-
-    for (let i = 0; i < array.length; i += chunkSize) {
-        let chunk = array.slice(i, i + chunkSize);
-        result.push(chunk);
-    }
-
-    return result;
-}
 
 const roomIds = await getRoomId();
 const chunks = splitArrayIntoChunks(roomIds, 10);
