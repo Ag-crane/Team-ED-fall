@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/practice-rooms")
 public class PracticeRoomController {
@@ -46,7 +47,7 @@ public class PracticeRoomController {
 
 
     @GetMapping("/sorted-by-rating")
-    public Page<PracticeRooms> getPracticeRoomsByRating(
+    public Page<PracticeRooms> getPracticeRoomsByRating( // 서울 전체 합주실 평점순 정렬
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "4") int size) {
         return practiceRoomService.findPracticeRoomsByRating(page, size);

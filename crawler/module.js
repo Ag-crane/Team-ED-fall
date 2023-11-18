@@ -1,6 +1,5 @@
 import mysql from "mysql2/promise";
 import puppeteer from "puppeteer";
-// import "dotenv/config";
 import path from 'path';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -9,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
+
 const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -58,7 +58,7 @@ async function getAvailableTime(browser, prId, roomId, date) {
     waitUntil: "networkidle2",
     timeout: 10000,
   });
-  await page.waitForSelector("td:not(.calendar-unselectable)");
+  await page.waitForSelector('td:not(.calendar-unselectable)')
 
   await setCalendar(page, date);
 
@@ -214,7 +214,8 @@ async function getMonthlyData(prId, roomId) {
           date
         );
         // 모든 시간을 한 번에 데이터베이스에 삽입
-        const queries = availableTimes.map((time) =>
+
+        const queries = availableTimes.map(time => 
           connection.execute(
             `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
             [roomId, time, time]
@@ -232,15 +233,16 @@ async function getMonthlyData(prId, roomId) {
           console.error("Final attempt failed, moving to next date:");
         }
         attempt++;
-        await delay(30000); // 대기 후 재시도
+        await delay(10000); // 대기 후 재시도
       }
     }
-    await delay(5000); // 다음 요청 전에 대기
+    await delay(2000); // 다음 요청 전에 대기
     count++;
   }
   await connection.end();
   await browser.close();
 }
+
 
 function splitArrayIntoChunks(array, numberOfChunks) {
   let result = [];
@@ -254,6 +256,5 @@ function splitArrayIntoChunks(array, numberOfChunks) {
   return result;
 }
 
-// 함수 전체를 export
 export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId, delay, splitArrayIntoChunks };
 export default dbConfig;

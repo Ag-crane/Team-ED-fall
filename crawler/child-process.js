@@ -2,6 +2,7 @@ import { getRoomId } from "./module.js";
 import { fork } from "child_process";
 import { fileURLToPath } from 'url';
 import path from 'path';
+
 function splitArrayIntoChunks(array, numberOfChunks) {
     let result = [];
     let chunkSize = Math.ceil(array.length / numberOfChunks);
@@ -27,6 +28,7 @@ console.log("startTime: ",startTime)
 chunks.forEach(chunk => {
 
 	const child = fork(path.join(__dirname, 'reservation-crawler.js'));
+
 	child.send(chunk);
 
 	child.on('message', (result) => {
