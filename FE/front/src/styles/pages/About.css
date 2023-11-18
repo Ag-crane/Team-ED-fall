@@ -1,0 +1,16 @@
+.init_height{
+  min-height: 500px;
+}
+
+.card_pack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
