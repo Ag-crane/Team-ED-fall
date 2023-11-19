@@ -1,3 +1,42 @@
-.init_height{
-    min-height: 500px;
+.init_height {
+  min-height: 550px;
+}
+
+.enroll_form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.enroll_info{
+  width: 400px;
+}
+
+.enroll_picture{
+  width: 300px;
+  margin-right: 20px;
+}
+
+.enroll_btn{
+  margin-right: 20px;
+}
+
+.enroll_text {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input[type="file"] {
+  margin-bottom: 20px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }

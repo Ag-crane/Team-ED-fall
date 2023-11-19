@@ -4,7 +4,7 @@ import "../styles/components/Footer.css";
 function Footer() {
   return (
     <div className="footer">
-      <p>© 2023 Team ED</p>
+      <p className="teamname">© 2023 Team ED</p>
     </div>
   );
 }

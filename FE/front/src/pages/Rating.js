@@ -13,34 +13,60 @@ import markerImg from "../assets/marker.png";
 
 function Rating() {
   const [cardData, setCardData] = useState([]);
+  const [locationData, setLocationData] = useState([]);
 
   useEffect(() => {
-    async function fetchCardData() {
-      try {
-        const response = await fetch("../practiceRooms.json");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setCardData(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchCardData();
+    fetchHighestRatedPracticeRooms();
+    fetchAllPracticeLocations();
   }, []);
 
-  // 평점이 높은 순으로 정렬된 카드 데이터 (상위 4개만)
-  const sortedCardData = [...cardData]
-    .sort(
-      (a, b) =>
-        parseFloat(b.visitorReviewScore) - parseFloat(a.visitorReviewScore)
-    )
-    .slice(0, 4);
+  const fetchHighestRatedPracticeRooms = async () => {
+    try {
+      const response = await fetch(
+        "http://43.200.181.187:8080/practice-rooms/sorted-by-rating?page=0&size=4"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch highest-rated practice rooms");
+      }
+      const data = await response.json();
+      setCardData(data.content || []);
+    } catch (error) {
+      console.error("Error fetching highest-rated practice rooms:", error);
+    }
+  };
+
+  const fetchAllPracticeLocations = async () => {
+    try {
+      const response = await fetch(
+        "http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=0&size=1000"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch practice room locations");
+      }
+      const data = await response.json();
+      setLocationData(data.content || []);
+    } catch (error) {
+      console.error("Error fetching practice room locations:", error);
+    }
+  };
+
+  const renderMapMarkers = () => {
+    return locationData.map((location, index) => (
+      <Marker
+        key={index}
+        position={[parseFloat(location.y), parseFloat(location.x)]}
+        icon={L.icon({
+          iconUrl: markerImg,
+          iconSize: [25, 30],
+        })}
+      >
+        <Popup>{location.name}</Popup>
+      </Marker>
+    ));
+  };
 
   const renderCards = () => {
-    return sortedCardData.map((card, index) => (
+    return cardData.map((card, index) => (
       <RatingCard
         key={index}
         title={card.name}
@@ -70,7 +96,6 @@ function Rating() {
   return (
     <div>
       <Header />
-
       <MapContainer
         center={[37.5562, 126.9239]}
         zoom={16}
@@ -91,7 +116,6 @@ function Rating() {
         </div>
         <div className="rating_card_pack">{renderCards()}</div>
       </div>
-
       <Footer />
     </div>
   );

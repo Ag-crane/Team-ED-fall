@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/components/Dropdown/Filter.css";
 
-function Filter({ options, onChange }) {
+function Filter({ allUniqueAddresses, onChange }) {
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (event) => {
@@ -19,7 +19,7 @@ function Filter({ options, onChange }) {
         onChange={handleOptionChange}
       >
         <option value="">-</option>
-        {options.map((option, index) => (
+        {allUniqueAddresses.map((option, index) => (
           <option key={index} value={option}>
             {option}
           </option>

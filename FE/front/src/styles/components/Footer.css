@@ -1,13 +1,17 @@
 .footer {
   clear: both;
-  background-color: rgba(76, 105, 131, 0.3);
+  /* background-color: rgba(76, 105, 131, 0.3); */
   color: rgba(39, 57, 82);
-  margin-top: 20px;
+  margin-top: 60px;
   padding: 10px;
   text-align: left;
+  font-size: 12px;
   font-weight: bolder;
   left: 0;
   bottom: 0;
   }
 
-  
+  .teamname{
+    display: flex;
+    justify-content: center;
+  }
