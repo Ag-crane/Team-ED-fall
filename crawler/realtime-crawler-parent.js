@@ -1,17 +1,32 @@
 import { splitArrayIntoChunks, getRoomId } from "./module.js";
 import { fork } from "child_process";
 import { writeFile } from 'fs/promises';
-
+import dbConfig from "./module.js";
+import mysql from "mysql2/promise"
 async function saveResultsToFile(data, filename) {
     const jsonData = JSON.stringify(data, null, 4); // 예쁘게 출력하기 위해 indent 사용
     await writeFile(filename, jsonData, 'utf8');
     console.log(`Results saved to ${filename}`);
 }
 
-const roomIds = await getRoomId();
+async function getRoomIdByCommonAddress(commonAddress) {
+	const connection = await mysql.createConnection(dbConfig);
+	const query = `
+	  SELECT rd.pr_id, rd.room_id 
+	  FROM room_datas rd
+	  JOIN pr_hasbooking phb ON rd.pr_id = phb.bookingBusinessId
+	  WHERE phb.commonAddress LIKE ?;
+	`;
+	const [rows] = await connection.execute(query, [`%${commonAddress}%`]);
+	await connection.end();
+	return rows;
+  }
+
+const address = process.argv[2];
+const date = process.argv[3];
+const roomIds = await getRoomIdByCommonAddress(address);
 const chunks = splitArrayIntoChunks(roomIds, 5);
-// const region = process.argv[2]
-const date = process.argv[2];
+
 
 const results = []; // 결과를 저장할 배열
 
