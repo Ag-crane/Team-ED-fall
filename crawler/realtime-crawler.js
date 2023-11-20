@@ -1,4 +1,4 @@
-import { getAvailableTime } from "./module.js";
+import { getAvailableTime, delay } from "./module.js";
 import puppeteer from "puppeteer";
 
 
@@ -14,8 +14,8 @@ process.on('message', async (message) => {
         } catch (error) {
             process.send({ success: false, prId: pair.pr_id, roomId: pair.room_id, error: error.message });
         }
+        delay(1000)
     }
-    
     await browser.close();
     const endTime = Date.now();
     const duration = endTime - startTime;
