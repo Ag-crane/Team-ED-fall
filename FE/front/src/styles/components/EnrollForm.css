@@ -1,0 +1,94 @@
+.enroll-form {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  gap: 50px;
+}
+
+.enroll-form section img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.enroll-form section:nth-of-type(1) {
+  margin-top: 20px;
+  width: 300px;
+}
+
+.enroll-form section:nth-of-type(1) label {
+  margin-bottom: 30px;
+  width: 300px;
+}
+
+.enroll-form section:nth-of-type(1) input {
+  padding: 16px;
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+}
+
+.enroll-form section:nth-of-type(2) {
+  width: 450px;
+}
+
+.enroll-form section:nth-of-type(2) input {
+  padding: 15px;
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  width: 435px;
+}
+
+.enroll-form section:nth-of-type(2) label {
+  margin-top: 20px;
+  display: block;
+}
+
+.enroll-form section:nth-of-type(2) div {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.enroll-form section:nth-of-type(3) {
+  width: 800px;
+}
+
+.enroll-form section:nth-of-type(3) textarea {
+  width: 785px;
+  height: 270px;
+  resize: none;
+  padding: 16px;
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+}
+
+.enroll-form section:nth-of-type(4) {
+  width: 840px;
+}
+
+.enroll-form section:nth-of-type(4) div {
+  display: flex;
+  justify-content: flex-end;
+
+}
+
+.enroll-form label {
+  margin-bottom: 10px;
+  display: block;
+  color: #767676;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.enroll_btn{
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  width: 150px;
+  height: 50px;
+  color: white;
+  background-color: rgba(39, 57, 82,0.5);
+  border-radius: 10px;
+}

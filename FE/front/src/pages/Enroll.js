@@ -1,16 +1,21 @@
-import React from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import "../styles/pages/Enroll.css";
+import React from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import EnrollForm from '../components/EnrollForm';
+import '../styles/pages/Enroll.css';
 
-function Enroll() {
+const Enroll = () => {
   return (
     <div>
       <Header />
-      <p className="init_height">Enroll 페이지</p>
+      <form>
+        <div className="enroll_form">
+          <EnrollForm />
+        </div>
+      </form>
       <Footer />
     </div>
   );
-}
+};
 
 export default Enroll;

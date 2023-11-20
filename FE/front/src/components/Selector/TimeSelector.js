@@ -6,7 +6,7 @@ function TimeSelector({ selectedTimes, setSelectedTimes }) {
     if (selectedTimes.includes(time)) {
       setSelectedTimes(selectedTimes.filter((selectedTime) => selectedTime !== time));
     } else {
-      setSelectedTimes([...selectedTimes, time]);
+      setSelectedTimes([time]);
     }
   };
 

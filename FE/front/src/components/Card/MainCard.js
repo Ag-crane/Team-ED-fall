@@ -4,34 +4,33 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 function MainCard({ card }) {
-  const [isFavorite, setIsFavorite] = useState(card.isFavorite);
+  if (!card) {
+    card = {
+      practiceRoomName: "합주실 이름",
+      price: "가격",
+      address: "위치",
+      roomName: "룸 이름",
+    };
+  }
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
+  const { practiceRoomName, price, address, roomName } = card;
 
   return (
     <div className="main_container">
       <div className="main_title_box">
         <div className="main_card1">
-          <div className="main_card_title">{card.title}</div>
-          <div
-            className={`main_card_heart ${isFavorite ? "active" : ""}`}
-            onClick={toggleFavorite}
-          >
-            <FontAwesomeIcon icon={faHeart} />
-          </div>
+          <div className="main_card_title">{practiceRoomName}</div>
         </div>
         <div className="main_card2">
           <div className="main_card_locate">
             <FontAwesomeIcon icon={faMapMarkerAlt} />
-            {card.locate}
+            {`${address}`}
           </div>
-          <div className="main_card_cost">{card.cost}</div>
+          <div className="main_card_cost">{`₩${price}`}</div>
         </div>
       </div>
       <div className="main_content_box">
-        <div>{card.content}</div>
+        <div>{roomName}</div>
       </div>
     </div>
   );
