@@ -6,6 +6,7 @@ import Filter from "../components/Dropdown/Filter";
 import Pagination from "@mui/material/Pagination";
 import "../styles/pages/About.css";
 
+// 오류
 function About() {
   const [cardData, setCardData] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("");
