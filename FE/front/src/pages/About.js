@@ -3,8 +3,8 @@ import ListCard from "../components/Card/ListCard";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Filter from "../components/Dropdown/Filter";
-import Pagination from "@mui/material/Pagination";
 import "../styles/pages/About.css";
+import Pagination from "@mui/material/Pagination";
 
 // 오류
 function About() {
@@ -80,6 +80,7 @@ function About() {
         content={<img src={card.imageUrl} alt="사진이 없습니다." />}
       />
     ));
+
   };
 
   const handleFilterChange = async (selectedValue) => {
@@ -162,6 +163,12 @@ function About() {
     }
   };
 
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const totalPages = Math.ceil(filteredCardData.length / itemsPerPage);
+
   return (
     <div>
       <Header />
@@ -174,6 +181,7 @@ function About() {
       <div className="card_pack init_height">{renderFilteredCards()}</div>
       <div className="pagination">
         <Pagination
+
           count={selectedFilter ? filteredTotalPages : totalPages}
           page={currentPage}
           onChange={handlePageChange}

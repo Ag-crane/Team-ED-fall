@@ -6,10 +6,7 @@ import com.hapjusil.repository.PrHasBookingRepository;
 import com.hapjusil.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +14,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/rooms")
 public class RoomController {
@@ -36,4 +34,16 @@ public class RoomController {
         return bookingService.getAvailableRooms(startDateTime, endDateTime);
     }
 
+    @GetMapping("/available/location")
+    public List<AvailableRoomDto> getAvailableRoomsWithGu( // 날짜, 시작 시간, 종료시간, 특정 구 입력시 예약가능한 합주실 조회
+                                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                                     @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime startTime,
+                                                     @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime endTime,
+                                                     @RequestParam String gu) {
+
+        LocalDateTime startDateTime = LocalDateTime.of(date, startTime);
+        LocalDateTime endDateTime = LocalDateTime.of(date, endTime);
+
+        return bookingService.getAvailableRoomsWithGu(startDateTime, endDateTime, gu);
+    }
 }
