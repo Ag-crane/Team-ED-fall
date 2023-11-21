@@ -78,20 +78,6 @@ function Rating() {
     ));
   };
 
-  const renderMapMarkers = () => {
-    return cardData.map((card, index) => (
-      <Marker
-        key={index}
-        position={[parseFloat(card.y), parseFloat(card.x)]}
-        icon={L.icon({
-          iconUrl: markerImg,
-          iconSize: [25, 30],
-        })}
-      >
-        <Popup>{card.name}</Popup>
-      </Marker>
-    ));
-  };
 
   return (
     <div>
