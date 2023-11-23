@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import "../../styles/components/Card/MainCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 function MainCard({ card }) {
   if (!card) {
     card = {
-      practiceRoomName: "합주실 이름",
-      price: "가격",
-      address: "위치",
-      roomName: "룸 이름",
+      practiceRoomName: "Default Title",
+      price: "Default Cost",
+      address: "Default Location",
+      roomInfoList: [
+        { roomId: "1", roomName: "Default Room 1", price: 0 },
+        { roomId: "2", roomName: "Default Room 2", price: 0 },
+      ],
     };
   }
 
-  const { practiceRoomName, price, address, roomName } = card;
+  const { practiceRoomName, price, address, roomInfoList } = card;
 
   return (
     <div className="main_container">
@@ -26,11 +29,27 @@ function MainCard({ card }) {
             <FontAwesomeIcon icon={faMapMarkerAlt} />
             {`${address}`}
           </div>
-          <div className="main_card_cost">{`₩${price}`}</div>
         </div>
       </div>
       <div className="main_content_box">
-        <div>{roomName}</div>
+        {roomInfoList && roomInfoList.length > 0 && (
+          <div className="scrollBar">
+            <ul>
+              {roomInfoList.map((roomInfo) => (
+                <li className="li_room" key={roomInfo.roomId}>
+                  <div className="room_info">
+                    <div className="room_name">{roomInfo.roomName}</div>
+                    <div className="room_price">
+                      {roomInfo.price !== null
+                        ? `${roomInfo.price}원`
+                        : "정보없음"}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -67,24 +67,20 @@ function Home() {
         if (isValidDate && isValidTimes) {
           const dateParam = formatDate(selectedDate);
           const startTimeParam = formatTime(selectedTimes[0]);
-          const endTimeParam = formatTime(
-            selectedTimes[selectedTimes.length - 1],
-            1
-          );
-
+          const endTimeParam = formatTime(selectedTimes[selectedTimes.length - 1], 1);
+        
           const response = await fetch(
-            `http://43.200.181.187:8080/rooms/available?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}`
+            `http://43.200.181.187:8080/rooms/available2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}`
           );
-
+        
           if (!response.ok) {
             const errorMessage = `Failed to fetch data. Status: ${response.status} ${response.statusText}`;
             throw new Error(errorMessage);
           }
-
+        
           const data = await response.json();
-
-          // Group roomNames by practiceRoomName
-          const groupedCards = data.reduce((acc, card) => {
+        
+          const newGroupedCards = data.reduce((acc, card) => {
             const { practiceRoomName, roomName } = card;
             if (!acc[practiceRoomName]) {
               acc[practiceRoomName] = [];
@@ -92,8 +88,8 @@ function Home() {
             acc[practiceRoomName].push(roomName);
             return acc;
           }, {});
-
-          setGroupedCards(groupedCards);
+          
+          setGroupedCards(newGroupedCards);
           setCards(data);
         } else {
           console.error("Invalid date or times");
@@ -149,8 +145,8 @@ function Home() {
                 </button>
               </div>
               <div className="maincard_group">
-                <MainCard card={currentCard1} />
-                <MainCard card={currentCard2} />
+              <MainCard card={currentCard1} groupedCards={groupedCards} />
+              <MainCard card={currentCard2} groupedCards={groupedCards} />
               </div>
               <div className="nav_buttons">
                 <button onClick={nextCard}>
