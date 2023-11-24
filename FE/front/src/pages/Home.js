@@ -10,6 +10,7 @@ import RegionSelector from "../components/Selector/RegionSelector";
 import "../styles/pages/Home.css";
 
 function Home() {
+  const [selectedRegion, setSelectedRegion] = useState("default");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimes, setSelectedTimes] = useState([]);
   const [cards, setCards] = useState([]);
@@ -65,7 +66,7 @@ function Home() {
         console.log("isValidDate:", isValidDate);
         console.log("isValidTimes:", isValidTimes);
 
-        if (isValidDate && isValidTimes) {
+        if (isValidDate && isValidTimes && selectedRegion !== "default") {
           const dateParam = formatDate(selectedDate);
           const startTimeParam = formatTime(selectedTimes[0]);
           const endTimeParam = formatTime(
@@ -103,10 +104,10 @@ function Home() {
       }
     }
 
-    if (selectedDate && selectedTimes.length > 0) {
+    if (selectedDate && selectedTimes.length > 0 && selectedRegion !== "default") {
       fetchData();
     }
-  }, [selectedDate, selectedTimes]);
+  }, [selectedDate, selectedTimes, selectedRegion]);
 
   const nextCard = () => {
     const nextIndex = (currentIndex + 2) % cards.length;
@@ -124,11 +125,11 @@ function Home() {
   console.log("currentCard1:", currentCard1);
   console.log("currentCard2:", currentCard2);
 
-  const [selectedRegion, setSelectedRegion] = useState("default");
 
-  const handleRegionChange = (event) => {
-    setSelectedRegion(event.target.value);
+  const handleRegionChange = (region) => {
+    setSelectedRegion(region);
   };
+
 
   return (
     <div>
