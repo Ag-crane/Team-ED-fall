@@ -20,6 +20,7 @@
 .content-shifted {
   display: flex;
   justify-content: space-around;
+  margin: 50px;
   align-items: center;
 }
 
@@ -37,8 +38,26 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  width: 800px;
 }
 
 .datetime{
   width: 300px;
+}
+
+.noroom_container{
+  margin-top: -10px;
+  background-color: rgba(39, 57, 82);
+  color: white;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.noroom_text{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  width: 400px;
 }
