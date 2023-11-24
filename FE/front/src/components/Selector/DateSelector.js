@@ -3,12 +3,17 @@ import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from "styled-components";
+import { addDays } from "date-fns";
 
 function DateSelector({ selectedDate, setSelectedDate }) {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomarrow = addDays(today, 1);
+  const maxDate = addDays(today, 30);
   return (
     <CalendarContainer>
       <DatePicker
@@ -18,6 +23,8 @@ function DateSelector({ selectedDate, setSelectedDate }) {
         dateFormat="yyyy/MM/dd"
         isClearable
         inline
+        minDate={tomarrow}
+        maxDate={maxDate}
       />
     </CalendarContainer>
   );

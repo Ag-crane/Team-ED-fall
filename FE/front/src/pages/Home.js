@@ -6,9 +6,11 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DateSelector from "../components/Selector/DateSelector";
 import TimeSelector from "../components/Selector/TimeSelector";
+import RegionSelector from "../components/Selector/RegionSelector";
 import "../styles/pages/Home.css";
 
 function Home() {
+  const [selectedRegion, setSelectedRegion] = useState("default");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimes, setSelectedTimes] = useState([]);
   const [cards, setCards] = useState([]);
@@ -64,22 +66,25 @@ function Home() {
         console.log("isValidDate:", isValidDate);
         console.log("isValidTimes:", isValidTimes);
 
-        if (isValidDate && isValidTimes) {
+        if (isValidDate && isValidTimes && selectedRegion !== "default") {
           const dateParam = formatDate(selectedDate);
           const startTimeParam = formatTime(selectedTimes[0]);
-          const endTimeParam = formatTime(selectedTimes[selectedTimes.length - 1], 1);
-        
+          const endTimeParam = formatTime(
+            selectedTimes[selectedTimes.length - 1],
+            1
+          );
+
           const response = await fetch(
             `http://43.200.181.187:8080/rooms/available2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}`
           );
-        
+
           if (!response.ok) {
             const errorMessage = `Failed to fetch data. Status: ${response.status} ${response.statusText}`;
             throw new Error(errorMessage);
           }
-        
+
           const data = await response.json();
-        
+
           const newGroupedCards = data.reduce((acc, card) => {
             const { practiceRoomName, roomName } = card;
             if (!acc[practiceRoomName]) {
@@ -88,7 +93,7 @@ function Home() {
             acc[practiceRoomName].push(roomName);
             return acc;
           }, {});
-          
+
           setGroupedCards(newGroupedCards);
           setCards(data);
         } else {
@@ -99,10 +104,10 @@ function Home() {
       }
     }
 
-    if (selectedDate && selectedTimes.length > 0) {
+    if (selectedDate && selectedTimes.length > 0 && selectedRegion !== "default") {
       fetchData();
     }
-  }, [selectedDate, selectedTimes]);
+  }, [selectedDate, selectedTimes, selectedRegion]);
 
   const nextCard = () => {
     const nextIndex = (currentIndex + 2) % cards.length;
@@ -120,12 +125,22 @@ function Home() {
   console.log("currentCard1:", currentCard1);
   console.log("currentCard2:", currentCard2);
 
+
+  const handleRegionChange = (region) => {
+    setSelectedRegion(region);
+  };
+
+
   return (
     <div>
       <Header />
       <div className={`content ${cards.length > 0 ? "content-shifted" : ""}`}>
-        <p className="time_title">원하는 시간을 선택하세요</p>
+        <p className="time_title">원하는 지역, 날짜, 시간을 선택하세요</p>
         <div className="selector">
+          <RegionSelector
+            selectedRegion={selectedRegion}
+            onRegionChange={handleRegionChange}
+          />
           <DateSelector
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -145,8 +160,8 @@ function Home() {
                 </button>
               </div>
               <div className="maincard_group">
-              <MainCard card={currentCard1} groupedCards={groupedCards} />
-              <MainCard card={currentCard2} groupedCards={groupedCards} />
+                <MainCard card={currentCard1} groupedCards={groupedCards} />
+                <MainCard card={currentCard2} groupedCards={groupedCards} />
               </div>
               <div className="nav_buttons">
                 <button onClick={nextCard}>
