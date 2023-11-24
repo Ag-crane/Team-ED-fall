@@ -10,21 +10,6 @@ function Modal({ isOpen, onClose, children }) {
     }
   };
 
-  // Escape 키 이벤트 처리
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [onClose]);
-
   if (!isOpen) return null;
 
   return (
