@@ -75,7 +75,7 @@ function Home() {
           );
 
           const response = await fetch(
-            `http://43.200.181.187:8080/rooms/available2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}`
+            `http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
           );
 
           if (!response.ok) {
