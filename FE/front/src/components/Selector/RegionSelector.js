@@ -6,7 +6,7 @@ const RegionSelector = ({ selectedRegion, onRegionChange }) => {
     <div className='region-select-box'>
       <select
         value={selectedRegion}
-        onChange={onRegionChange}
+        onChange={(e) => onRegionChange(e.target.value)}
         className="dropdown-select"
       >
         <option value="default" disabled>
