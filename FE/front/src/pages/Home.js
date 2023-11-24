@@ -18,12 +18,8 @@ function Home() {
   const [groupedCards, setGroupedCards] = useState({});
 
   useEffect(() => {
-    console.log("Inside useEffect");
-
     async function fetchData() {
       try {
-        console.log("Inside fetchData");
-
         const formatDate = (date) => {
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -48,13 +44,6 @@ function Home() {
           return `${String(hours).padStart(2, "0")}:${minute}:00`;
         };
 
-        console.log("Selected Date Type:", selectedDate);
-        console.log(
-          "Selected Times Type:",
-          typeof selectedTimes,
-          selectedTimes
-        );
-
         const isValidDate = selectedDate instanceof Date;
         const isValidTimes =
           selectedTimes.length > 0 &&
@@ -63,19 +52,21 @@ function Home() {
             return !isNaN(date.getTime());
           });
 
-        console.log("isValidDate:", isValidDate);
-        console.log("isValidTimes:", isValidTimes);
-
         if (isValidDate && isValidTimes && selectedRegion !== "default") {
-          const dateParam = formatDate(selectedDate);
-          const startTimeParam = formatTime(selectedTimes[0]);
+          const sortedTimes = selectedTimes.sort();
+          const startTimeParam = formatTime(sortedTimes[0]);
           const endTimeParam = formatTime(
-            selectedTimes[selectedTimes.length - 1],
+            sortedTimes[sortedTimes.length - 1],
             1
           );
+          const dateParam = formatDate(selectedDate);
+
+          console.log("Selected Start Time:", startTimeParam);
+          console.log("Selected End Time:", endTimeParam);
+          console.log("Region:", selectedRegion);
 
           const response = await fetch(
-            `http://43.200.181.187:8080/rooms/available2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}`
+            `http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
           );
 
           if (!response.ok) {
@@ -104,7 +95,11 @@ function Home() {
       }
     }
 
-    if (selectedDate && selectedTimes.length > 0 && selectedRegion !== "default") {
+    if (
+      selectedDate &&
+      selectedTimes.length > 0 &&
+      selectedRegion !== "default"
+    ) {
       fetchData();
     }
   }, [selectedDate, selectedTimes, selectedRegion]);
@@ -122,14 +117,12 @@ function Home() {
   const currentCard1 = cards[currentIndex];
   const currentCard2 = cards[(currentIndex + 1) % cards.length];
 
-  console.log("currentCard1:", currentCard1);
-  console.log("currentCard2:", currentCard2);
-
+  const availablePracticeRooms = Object.keys(groupedCards);
+  const hasMultipleRooms = availablePracticeRooms.length > 1;
 
   const handleRegionChange = (region) => {
     setSelectedRegion(region);
   };
-
 
   return (
     <div>
@@ -152,23 +145,54 @@ function Home() {
           />
         </div>
         <div>
-          {cards.length > 0 && (
-            <div className="maincard_box">
-              <div className="nav_buttons">
-                <button onClick={prevCard}>
-                  <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
-              </div>
-              <div className="maincard_group">
-                <MainCard card={currentCard1} groupedCards={groupedCards} />
-                <MainCard card={currentCard2} groupedCards={groupedCards} />
-              </div>
-              <div className="nav_buttons">
-                <button onClick={nextCard}>
-                  <FontAwesomeIcon icon={faArrowRight} />
-                </button>
-              </div>
+          {selectedRegion !== "default" &&
+          selectedDate &&
+          selectedTimes.length > 0 ? (
+            <div
+              className={`content-shifted ${
+                cards.length > 0 ? "content-shifted" : ""
+              }`}
+            >
+              {cards.length > 0 ? (
+                <div className="maincard_box">
+                  <div className="nav_buttons">
+                    <button onClick={prevCard}>
+                      <FontAwesomeIcon icon={faArrowLeft} />
+                    </button>
+                  </div>
+                  <div className="maincard_group">
+                    {hasMultipleRooms ? (
+                      <>
+                        <MainCard
+                          card={currentCard1}
+                          groupedCards={groupedCards}
+                        />
+                        <MainCard
+                          card={currentCard2}
+                          groupedCards={groupedCards}
+                        />
+                      </>
+                    ) : (
+                      <MainCard
+                        card={currentCard1}
+                        groupedCards={groupedCards}
+                      />
+                    )}
+                  </div>
+                  <div className="nav_buttons">
+                    <button onClick={nextCard}>
+                      <FontAwesomeIcon icon={faArrowRight} />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="noroom_container">
+                  <p className="noroom_text">이용 가능한 합주실이 없습니다.</p>
+                </div>
+              )}
             </div>
+          ) : (
+            <div></div>
           )}
         </div>
       </div>
