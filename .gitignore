@@ -1,4 +1,5 @@
 node_modules/
 .env
 *.log
-*.json
+crawler/nohup.out
+crawler/results.json
