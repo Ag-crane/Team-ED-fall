@@ -70,14 +70,12 @@ function About() {
     const cardsToRender = selectedFilter
       ? filteredCardData.slice(startIndex, endIndex)
       : cardData.slice(startIndex, endIndex);
-  
-    return cardsToRender.map((card, index) => (
+    console.log("cardsToRender: ",cardsToRender)
+
+    return cardsToRender.map((cardData, index) => (
       <ListCard
         key={index}
-        title={card.name}
-        cost={card.cost}
-        locate={card.fullAddress}
-        content={<img src={card.imageUrl} alt="사진이 없습니다." />}
+        cardData={cardData}
       />
     ));
   };
