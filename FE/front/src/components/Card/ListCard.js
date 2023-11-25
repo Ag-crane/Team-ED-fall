@@ -62,19 +62,16 @@ function ListCard({ cardData }) {
             <p>
               <strong>연락처:</strong> {phone || virtualPhone}
             </p>
-            {hasBooking === "True" && (
-              <p>
-                <strong>예약 가능:</strong>{" "}
-                <a href={bookingUrl} target="_blank" rel="noopener noreferrer">
-                  예약 링크
-                </a>
-              </p>
-            )}
-            {visitorReviewScore && (
-              <p>
-                <strong>방문자 평점:</strong> {visitorReviewScore}
-              </p>
-            )}
+            <p>
+              <strong>방문자 평점:</strong>{" "}
+              {visitorReviewScore ? visitorReviewScore : "-"}
+            </p>
+            <button
+              onClick={() => window.open(bookingUrl, "_blank")}
+              disabled={hasBooking !== "True"}
+            >
+              예약 페이지로 이동
+            </button>
           </div>
         </div>
       </Modal>
