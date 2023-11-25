@@ -1,13 +1,13 @@
 import mysql from "mysql2/promise";
 import puppeteer from "puppeteer";
-import path from 'path';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
+import path from "path";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -58,7 +58,7 @@ async function getAvailableTime(browser, prId, roomId, date) {
     waitUntil: "networkidle2",
     timeout: 10000,
   });
-  await page.waitForSelector('td:not(.calendar-unselectable)')
+  await page.waitForSelector("td:not(.calendar-unselectable)");
 
   await setCalendar(page, date);
 
@@ -103,7 +103,8 @@ function formatDate(date) {
 
 function getNextDays(days = 30) {
   let dates = [];
-  let currentDate = new Date();
+  // let currentDate = new Date();
+  let currentDate = new Date(2023, 11, 1);
 
   currentDate.setDate(currentDate.getDate() + 1);
 
@@ -199,9 +200,9 @@ async function getDataAndInsert(date) {
 }
 
 async function getMonthlyData(prId, roomId) {
-  let browser = await puppeteer.launch();
+  let browser = await puppeteer.launch({ headless: true });
   const connection = await mysql.createConnection(dbConfig);
-  const dates = getNextDays();
+  const dates = getNextDays(7);
   let count = 1;
   for (const date of dates) {
     let attempt = 1;
@@ -215,7 +216,7 @@ async function getMonthlyData(prId, roomId) {
         );
         // 모든 시간을 한 번에 데이터베이스에 삽입
 
-        const queries = availableTimes.map(time => 
+        const queries = availableTimes.map((time) =>
           connection.execute(
             `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
             [roomId, time, time]
@@ -243,18 +244,24 @@ async function getMonthlyData(prId, roomId) {
   await browser.close();
 }
 
-
 function splitArrayIntoChunks(array, numberOfChunks) {
   let result = [];
   let chunkSize = Math.ceil(array.length / numberOfChunks);
 
   for (let i = 0; i < array.length; i += chunkSize) {
-      let chunk = array.slice(i, i + chunkSize);
-      result.push(chunk);
+    let chunk = array.slice(i, i + chunkSize);
+    result.push(chunk);
   }
 
   return result;
 }
 
-export { getAvailableTime, getDataAndInsert, getMonthlyData, getRoomId, delay, splitArrayIntoChunks };
+export {
+  getAvailableTime,
+  getDataAndInsert,
+  getMonthlyData,
+  getRoomId,
+  delay,
+  splitArrayIntoChunks,
+};
 export default dbConfig;
