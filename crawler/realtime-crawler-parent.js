@@ -3,8 +3,19 @@ import { fork } from "child_process";
 import { writeFile } from 'fs/promises';
 import dbConfig from "./module.js";
 import mysql from "mysql2/promise"
+import axios from "axios";
+
+async function sendResultsToServer(data) {
+    try {
+        const response = await axios.post('http://yourserver.com/api/results', data);
+        console.log(`Results sent to server: ${response.statusText}`);
+    } catch (err) {
+        console.error('Error sending results to server:', err);
+    }
+}
+
 async function saveResultsToFile(data, filename) {
-    const jsonData = JSON.stringify(data, null, 4); // 예쁘게 출력하기 위해 indent 사용
+    const jsonData = JSON.stringify(data, null, 4);
     await writeFile(filename, jsonData, 'utf8');
     console.log(`Results saved to ${filename}`);
 }
@@ -26,32 +37,28 @@ const address = process.argv[2];
 const date = process.argv[3];
 const roomIds = await getRoomIdByCommonAddress(address);
 const chunks = splitArrayIntoChunks(roomIds, 5);
-
-
-const results = []; // 결과를 저장할 배열
+let totalResults = [];
 
 chunks.forEach(chunk => {
     const child = fork('realtime-crawler.js', { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] });
 	child.send({ date, chunk });
 
-	child.on('message', async(result) => {
-		results.push(result);
-
-        if (results.length === chunks.length) {
+    child.on('message', async(message) => {
+        const { results, duration } = message;
+        // 결과 배열에 추가
+        results.forEach(result => totalResults.push(result));
+        if (totalResults.length === roomIds.length) {
             try {
-                await saveResultsToFile(results, 'results.json');
+                await saveResultsToFile(totalResults, 'results.json');
+				console.log('Results saved to file');
             } catch (err) {
                 console.error('Error saving results to file:', err);
             }
         }
 
-		if ('duration' in result) {
-				console.log(`Total duration for this chunk: ${result.duration} milliseconds`);
-		} else if (result.success) {
-				console.log(`Crawling success for prId: ${result.prId}, roomId: ${result.roomId}`);
-		} else {
-				console.error(`Crawling failed for prId: ${result.prId}, roomId: ${result.roomId}, Error: ${result.error}`);
-		}
+        if (duration) {
+            console.log(`Total duration for this chunk: ${duration} milliseconds`);
+        }
 });
 
 	child.on('exit', (code) => {
