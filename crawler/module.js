@@ -16,30 +16,7 @@ const dbConfig = {
   database: process.env.DB_NAME,
 };
 
-async function getStartDate(page) {
-  const startDate = await page.$eval(
-    'td[class*="calendar-selected start-day"]',
-    (element) => element.getAttribute("data-cal-datetext")
-  );
-  console.log("현재 날짜 : ", startDate);
-}
-async function setCalendar(page, date) {
-  let targetDateElement = null;
-  while (!targetDateElement) {
-    targetDateElement = await page.$(
-      `td:not(.calendar-unselectable)[data-cal-datetext="${date}"]`
-    );
-    if (!targetDateElement) {
-      await page.waitForSelector('a[title="다음 달"]');
-      await page.evaluate(() => {
-        const nextMonthButton = document.querySelector('a[title="다음 달"]');
-        nextMonthButton.click();
-      });
-      await page.waitForSelector("td:not(.calendar-unselectable)");
-    }
-  }
-}
-
+// 크롤링 함수들
 async function getAvailableTime(browser, prId, roomId, date) {
   const page = await browser.newPage();
 
@@ -89,6 +66,127 @@ async function getAvailableTime(browser, prId, roomId, date) {
   return datetimeValues;
 }
 
+async function attemptCrawling(browser, connection, prId, roomId, date) {
+  let attempt = 1;
+  while (attempt <= 3) {
+    try {
+      const availableTimes = await getAvailableTime(
+        browser,
+        prId,
+        roomId,
+        date
+      );
+      const queries = availableTimes.map((time) =>
+        connection.execute(
+          `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
+          [roomId, time, time]
+        )
+      );
+      await Promise.all(queries);
+      return true; // 성공
+    } catch (error) {
+      console.error(
+        `Attempt ${attempt} failed for room: ${roomId}, Date: ${date}`
+      );
+      attempt++;
+      await delay(10000); // 대기 후 재시도
+    }
+  }
+  return false; // 실패
+}
+
+async function retryFailedTask(browser, connection, task, maxAttempts) {
+  let attempt = 0;
+  while (attempt < maxAttempts) {
+    let success = await attemptCrawling(
+      browser,
+      connection,
+      task.prId,
+      task.roomId,
+      task.date
+    );
+    if (success) {
+      console.log(
+        `Retry successful for prId: ${task.prId}, roomId: ${task.roomId}, Date: ${task.date}`
+      );
+      return;
+    }
+    attempt++;
+    await delay(5000); // 재시도 사이의 대기 시간
+  }
+  console.error(
+    `All retries failed for prId: ${task.prId}, roomId: ${task.roomId}, Date: ${task.date}`
+  );
+}
+
+async function getMonthlyData(prId, roomId) {
+  let browser = await puppeteer.launch({ headless: true });
+  const connection = await mysql.createConnection(dbConfig);
+
+  const dates = getNextDays(7);
+  let failedTasks = [];
+  let count = 1;
+
+  for (const date of dates) {
+    let success = await attemptCrawling(
+      browser,
+      connection,
+      prId,
+      roomId,
+      date
+    );
+
+    if (!success) {
+      failedTasks.push({ prId, roomId, date });
+      console.error(
+        `Crawling failed for task number ${count}: prId: ${prId}, roomId: ${roomId}, Date: ${date}`
+      );
+    } else {
+      console.log(
+        `Crawling successful for task number ${count}: prId: ${prId}, roomId: ${roomId}, Date: ${date}`
+      );
+    }
+
+    count++;
+  }
+
+  // 크롤링이 완료된 후 실패한 작업 재시도
+  console.log("failedTasks: ", failedTasks);
+  for (const task of failedTasks) {
+    await retryFailedTask(browser, connection, task, 3); // 여기서 3은 최대 재시도 횟수
+  }
+
+  await connection.end();
+  await browser.close();
+}
+
+async function getStartDate(page) {
+  const startDate = await page.$eval(
+    'td[class*="calendar-selected start-day"]',
+    (element) => element.getAttribute("data-cal-datetext")
+  );
+  console.log("현재 날짜 : ", startDate);
+}
+
+async function setCalendar(page, date) {
+  let targetDateElement = null;
+  while (!targetDateElement) {
+    targetDateElement = await page.$(
+      `td:not(.calendar-unselectable)[data-cal-datetext="${date}"]`
+    );
+    if (!targetDateElement) {
+      await page.waitForSelector('a[title="다음 달"]');
+      await page.evaluate(() => {
+        const nextMonthButton = document.querySelector('a[title="다음 달"]');
+        nextMonthButton.click();
+      });
+      await page.waitForSelector("td:not(.calendar-unselectable)");
+    }
+  }
+}
+
+
+
 function formatDate(date) {
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -121,127 +219,13 @@ function delay(time) {
     setTimeout(resolve, time);
   });
 }
+
 async function getRoomId() {
   const connection = await mysql.createConnection(dbConfig);
   const [rows] = await connection.execute(
     "SELECT pr_id, room_id FROM room_datas"
   );
   return rows;
-}
-
-async function getDataAndInsert(date) {
-  let browser = await puppeteer.launch();
-
-  const connection = await mysql.createConnection(dbConfig);
-
-  await connection.execute(`
-    CREATE TABLE IF NOT EXISTS reservation_datas(
-      room_id INT NOT NULL,
-      available_time DATETIME NOT NULL,
-      PRIMARY KEY (room_id, available_time)
-    )`);
-  try {
-    const [rows] = await connection.execute(
-      "SELECT pr_id, room_id FROM room_datas"
-    );
-    const reverseRows = rows.reverse();
-    // const dates = getNextDays();
-    let count = 1;
-    for (const row of reverseRows) {
-      let attempt = 1;
-      while (attempt < 5) {
-        try {
-          const availableTimes = await getAvailableTime(
-            browser,
-            prId,
-            roomId,
-            date
-          );
-          for (const time of availableTimes) {
-            await connection.execute(
-              `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
-              [row.room_id, time, time]
-            );
-          }
-          console.log(
-            "Num : ",
-            count,
-            "roomID : ",
-            row.room_id,
-            "날짜 : ",
-            date
-          );
-          break; // 성공할 경우 while문 탈출
-        } catch {
-          console.log(
-            "Attempt",
-            attempt,
-            "failed for room:",
-            row.room_id,
-            "Date:",
-            date
-          );
-          attempt++;
-          await browser.close();
-          browser = await puppeteer.launch();
-          await delay(10000); // 대기 후 재시도
-        }
-      }
-      await delay(1000); // 다음 요청 전에 대기
-
-      count++;
-    }
-  } catch (err) {
-    console.error("Error:", err);
-  } finally {
-    await connection.end();
-    await browser.close();
-  }
-}
-
-async function getMonthlyData(prId, roomId) {
-  let browser = await puppeteer.launch({ headless: true });
-  const connection = await mysql.createConnection(dbConfig);
-  const dates = getNextDays(7);
-  let count = 1;
-  for (const date of dates) {
-    let attempt = 1;
-    while (attempt <= 3) {
-      try {
-        const availableTimes = await getAvailableTime(
-          browser,
-          prId,
-          roomId,
-          date
-        );
-        // 모든 시간을 한 번에 데이터베이스에 삽입
-
-        const queries = availableTimes.map((time) =>
-          connection.execute(
-            `INSERT INTO reservation_datas (room_id, available_time) VALUES (?, ?) ON DUPLICATE KEY UPDATE available_time = ?`,
-            [roomId, time, time]
-          )
-        );
-        await Promise.all(queries);
-
-        console.log("Num : ", count, "roomID : ", roomId, "날짜 : ", date);
-        break; // 성공할 경우 while문 탈출
-      } catch {
-        console.error(
-          `Attempt ${attempt} failed for room: ${roomId}, Date: ${date}`
-        );
-        if (attempt === 3) {
-          console.error("Final attempt failed, moving to next date:");
-        }
-        attempt++;
-        await delay(10000); // 대기 후 재시도
-      }
-    }
-    await delay(2000); // 다음 요청 전에 대기
-    count++;
-  }
-  await connection.end();
-  await browser.close();
 }
 
 function splitArrayIntoChunks(array, numberOfChunks) {
@@ -258,7 +242,6 @@ function splitArrayIntoChunks(array, numberOfChunks) {
 
 export {
   getAvailableTime,
-  getDataAndInsert,
   getMonthlyData,
   getRoomId,
   delay,
