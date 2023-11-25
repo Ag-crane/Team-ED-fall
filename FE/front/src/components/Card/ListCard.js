@@ -7,7 +7,17 @@ import Modal from "../Modal";
 function ListCard({ cardData }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { name, commonAddress, fullAddress, phone, virtualPhone , imageUrl, hasBooking, bookingUrl, visitorReviewScore } = cardData;
+  const {
+    name,
+    commonAddress,
+    fullAddress,
+    phone,
+    virtualPhone,
+    imageUrl,
+    hasBooking,
+    bookingUrl,
+    visitorReviewScore,
+  } = cardData;
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
@@ -37,11 +47,36 @@ function ListCard({ cardData }) {
         </div>
       </div>
       <div className="content_box" onClick={toggleModal}>
-        <div><img src={imageUrl} alt="사진이 없습니다" /></div>
+        <div>
+          <img src={imageUrl} alt="사진이 없습니다" />
+        </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={toggleModal}>
-        <h2>ㅇㅇㅇ</h2>
-        <p>dd</p>
+        <div className="modal-content">
+          <h2 className="modal-title">{name}</h2>
+          <img className="modal-image" src={imageUrl} alt={name} />
+          <div className="modal-details">
+            <p>
+              <strong>주소:</strong> {fullAddress}
+            </p>
+            <p>
+              <strong>연락처:</strong> {phone || virtualPhone}
+            </p>
+            {hasBooking === "True" && (
+              <p>
+                <strong>예약 가능:</strong>{" "}
+                <a href={bookingUrl} target="_blank" rel="noopener noreferrer">
+                  예약 링크
+                </a>
+              </p>
+            )}
+            {visitorReviewScore && (
+              <p>
+                <strong>방문자 평점:</strong> {visitorReviewScore}
+              </p>
+            )}
+          </div>
+        </div>
       </Modal>
     </div>
   );
