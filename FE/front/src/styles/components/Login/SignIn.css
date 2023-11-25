@@ -1,4 +1,4 @@
-.modal {
+.login_modal {
   position: fixed;
   top: 0;
   right: 0;
@@ -128,7 +128,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   width: 300px;
+  height: 100%;
   color: #fff;
   font-size: 15px;
   text-align: center;
@@ -144,4 +146,8 @@
   color: #bcbcbc;
   font-size: 12px;
   cursor: pointer;
+}
+
+a{
+  text-decoration:none;
 }
