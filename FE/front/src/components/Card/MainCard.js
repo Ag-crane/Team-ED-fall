@@ -16,7 +16,12 @@ function MainCard({ card }) {
     };
   }
 
-  const { practiceRoomName, price, address, roomInfoList } = card;
+  const { practiceRoomName, address, roomInfoList } = card;
+
+  // 이름순 정렬
+  const sortedRoomInfoList = roomInfoList.sort((a, b) =>
+    a.roomName.localeCompare(b.roomName)
+  );
 
   return (
     <div className="main_container">
@@ -32,10 +37,10 @@ function MainCard({ card }) {
         </div>
       </div>
       <div className="main_content_box">
-        {roomInfoList && roomInfoList.length > 0 && (
+        {sortedRoomInfoList && sortedRoomInfoList.length > 0 && (
           <div className="scrollBar">
             <ul>
-              {roomInfoList.map((roomInfo) => (
+              {sortedRoomInfoList.map((roomInfo) => (
                 <li className="li_room" key={roomInfo.roomId}>
                   <div className="room_info">
                     <div className="room_name">{roomInfo.roomName}</div>
