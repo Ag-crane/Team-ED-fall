@@ -6,6 +6,7 @@ import Enroll from "./pages/Enroll.js";
 import Rating from "./pages/Rating.js";
 import Login from "./pages/Login.js";
 import Heart from "./pages/Heart.js";
+import Search from "./pages/Search.js";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/enroll" element={<Enroll />} />
           <Route path="/login" element={<Login />} />
           <Route path="/heart" element={<Heart />} />
+          <Route path="/search" element={<Search />} />
           {" "}
         </Routes>
       </div>
