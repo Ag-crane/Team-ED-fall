@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaBars, FaSearch } from "react-icons/fa";
 import Sidebar from "./Sidebar";
 import "../styles/components/Header.css";
 
 function Header() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -34,6 +36,10 @@ function Header() {
     window.location.href = "/";
   };
 
+  const handleSearch = async () => {
+    navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+  };
+
   return (
     <div>
       <header className="title">
@@ -50,8 +56,13 @@ function Header() {
             placeholder="검색어를 입력하세요"
             value={searchQuery}
             onChange={handleSearchChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
           />
-          <button onClick={() => alert(`검색어: ${searchQuery}`)}>
+          <button onClick={handleSearch}>
             <FaSearch />
           </button>
         </div>
