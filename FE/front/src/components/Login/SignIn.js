@@ -14,40 +14,28 @@ class SignIn extends Component {
     this.setState({ [name]: value });
   };
 
-  loginClickHandler = () => {
-    const { email, password } = this.state;
-    fetch("http://localhost:8000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => console.log(res));
-  };
 
   render() {
     const { isOpen, close } = this.props;
     return (
       <>
         {isOpen ? (
-          <div className="modal">
+          <div className="login_modal">
             <div onClick={close}>
               <div className="loginModal">
                 <span className="close" onClick={close}>
                   &times;
                 </span>
-                <div className="modalContents" onClick={isOpen}>
+                <div className="modalContents" onClick={() => isOpen ? close() : null}>
                   <div className="socialBox">
                     <div className="google">
                       <div className="googleText">구글 계정으로 로그인</div>
                     </div>
                     <div className="kakao">
-                      <div className="kakaoText">카카오 계정으로 로그인</div>
+                      <Link to="http://43.200.181.187:8080/oauth2/authorization/kakao">
+                        {/* 현재 localhost에서는 소셜로그인 불가 */}
+                        <div className="kakaoText">카카오 계정으로 로그인</div>
+                      </Link>
                     </div>
                   </div>
                   <HorizonLine text="또는" />
@@ -72,7 +60,7 @@ class SignIn extends Component {
                     </label>
                     <div className="toSignin">회원가입</div>
                   </div>
-                  <button className="loginBtn" onClick={this.loginClickHandler}>
+                  <button className="loginBtn">
                     {" "}
                     로그인{" "}
                   </button>
