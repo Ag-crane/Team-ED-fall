@@ -16,93 +16,106 @@ function Home() {
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
+  const [isButtonActive, setIsButtonActive] = useState(false);
+  const [isDataFetched, setIsDataFetched] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const formatDate = (date) => {
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, "0");
-          const day = String(date.getDate()).padStart(2, "0");
-          return `${year}-${month}-${day}`;
-        };
+    const isValidDate = selectedDate instanceof Date;
+    const isValidTimes = selectedTimes.length > 0;
+    const isRegionSelected = selectedRegion !== "default";
 
-        const formatTime = (timeString, addHour = 0) => {
-          const [hour, minute, meridian] = timeString.split(/:|\s/);
-          let hours = parseInt(hour, 10);
+    setIsButtonActive(isValidDate && isValidTimes && isRegionSelected);
 
-          if (addHour) {
-            hours += 1;
-          }
+    //   if (
+    //     selectedDate &&
+    //     selectedTimes.length > 0 &&
+    //     selectedRegion !== "default"
+    //   ) {
+    //     fetchData();
+    //   }
+    // }, [selectedDate, selectedTimes, selectedRegion]);
+  }, [selectedDate, selectedTimes, selectedRegion]);
 
-          if (meridian === "PM" && hours < 12) {
-            hours += 12;
-          } else if (meridian === "AM" && hours === 12) {
-            hours = 0;
-          }
+  async function fetchData() {
+    try {
+      const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
 
-          return `${String(hours).padStart(2, "0")}:${minute}:00`;
-        };
+      const formatTime = (timeString, addHour = 0) => {
+        const [hour, minute, meridian] = timeString.split(/:|\s/);
+        let hours = parseInt(hour, 10);
 
-        const isValidDate = selectedDate instanceof Date;
-        const isValidTimes =
-          selectedTimes.length > 0 &&
-          selectedTimes.every((time) => {
-            const date = new Date(`2000-01-01 ${time}`);
-            return !isNaN(date.getTime());
-          });
-
-        if (isValidDate && isValidTimes && selectedRegion !== "default") {
-          const sortedTimes = selectedTimes.sort();
-          const startTimeParam = formatTime(sortedTimes[0]);
-          const endTimeParam = formatTime(
-            sortedTimes[sortedTimes.length - 1],
-            1
-          );
-          const dateParam = formatDate(selectedDate);
-
-          console.log("Selected Start Time:", startTimeParam);
-          console.log("Selected End Time:", endTimeParam);
-          console.log("Region:", selectedRegion);
-
-          const response = await fetch(
-            `http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
-          );
-
-          if (!response.ok) {
-            const errorMessage = `Failed to fetch data. Status: ${response.status} ${response.statusText}`;
-            throw new Error(errorMessage);
-          }
-
-          const data = await response.json();
-
-          const newGroupedCards = data.reduce((acc, card) => {
-            const { practiceRoomName, roomName } = card;
-            if (!acc[practiceRoomName]) {
-              acc[practiceRoomName] = [];
-            }
-            acc[practiceRoomName].push(roomName);
-            return acc;
-          }, {});
-
-          setGroupedCards(newGroupedCards);
-          setCards(data);
-        } else {
-          console.error("Invalid date or times");
+        if (addHour) {
+          hours += 1;
         }
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
-      }
-    }
 
-    if (
-      selectedDate &&
-      selectedTimes.length > 0 &&
-      selectedRegion !== "default"
-    ) {
+        if (meridian === "PM" && hours < 12) {
+          hours += 12;
+        } else if (meridian === "AM" && hours === 12) {
+          hours = 0;
+        }
+
+        return `${String(hours).padStart(2, "0")}:${minute}:00`;
+      };
+
+      const isValidDate = selectedDate instanceof Date;
+      const isValidTimes =
+        selectedTimes.length > 0 &&
+        selectedTimes.every((time) => {
+          const date = new Date(`2000-01-01 ${time}`);
+          return !isNaN(date.getTime());
+        });
+
+      if (isValidDate && isValidTimes && selectedRegion !== "default") {
+        const sortedTimes = selectedTimes.sort();
+        const startTimeParam = formatTime(sortedTimes[0]);
+        const endTimeParam = formatTime(sortedTimes[sortedTimes.length - 1], 1);
+        const dateParam = formatDate(selectedDate);
+
+        console.log("Selected Start Time:", startTimeParam);
+        console.log("Selected End Time:", endTimeParam);
+        console.log("Region:", selectedRegion);
+
+        const response = await fetch(
+          `http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
+        );
+
+        if (!response.ok) {
+          const errorMessage = `Failed to fetch data. Status: ${response.status} ${response.statusText}`;
+          throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+
+        const newGroupedCards = data.reduce((acc, card) => {
+          const { practiceRoomName, roomName } = card;
+          if (!acc[practiceRoomName]) {
+            acc[practiceRoomName] = [];
+          }
+          acc[practiceRoomName].push(roomName);
+          return acc;
+        }, {});
+
+        setGroupedCards(newGroupedCards);
+        setCards(data);
+        setIsDataFetched(true);
+      } else {
+        console.error("Invalid date or times");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  }
+
+  const handleSearch = () => {
+    if (isButtonActive) {
       fetchData();
     }
-  }, [selectedDate, selectedTimes, selectedRegion]);
+  };
 
   const nextCard = () => {
     const nextIndex = (currentIndex + 2) % cards.length;
@@ -143,11 +156,16 @@ function Home() {
             selectedTimes={selectedTimes}
             setSelectedTimes={setSelectedTimes}
           />
+          <button
+            className="search_button"
+            onClick={handleSearch}
+            disabled={!isButtonActive}
+          >
+            검색하기
+          </button>
         </div>
         <div>
-          {selectedRegion !== "default" &&
-          selectedDate &&
-          selectedTimes.length > 0 ? (
+          {isDataFetched ? (
             <div
               className={`content-shifted ${
                 cards.length > 0 ? "content-shifted" : ""
