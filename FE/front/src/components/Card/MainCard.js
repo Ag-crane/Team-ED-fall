@@ -16,7 +16,7 @@ function MainCard({ card }) {
     };
   }
 
-  const { practiceRoomName, address, roomInfoList } = card;
+  const { practiceRoomName, address, roomInfoList, imageUrl } = card;
 
   // 이름순 정렬
   const sortedRoomInfoList = roomInfoList.sort((a, b) =>
@@ -28,6 +28,9 @@ function MainCard({ card }) {
       <div className="main_title_box">
         <div className="main_card1">
           <div className="main_card_title">{practiceRoomName}</div>
+        </div>
+        <div className="main_img_box">
+          <img src={imageUrl} alt="사진이 없습니다" />
         </div>
         <div className="main_card2">
           <div className="main_card_locate">
