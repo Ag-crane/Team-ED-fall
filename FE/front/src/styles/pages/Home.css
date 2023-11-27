@@ -61,3 +61,23 @@
   text-align: center;
   width: 400px;
 }
+
+.search_button{
+  margin-top: 20px;
+  width: 100px;
+  height: 40px;
+  background-color: rgba(39, 57, 82);
+  color: white;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.search_button:disabled{
+  background-color: rgba(39, 57, 82, 0.5);
+  color: white;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: not-allowed;
+}
