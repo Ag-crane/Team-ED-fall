@@ -15,7 +15,7 @@ function RatingCard({ title, content, cost, locate, rating }) {
       <div className="title_box">
         <div className="card1">
           <div className="card_title">{title}</div>
-          <div className="card_rating">{rating}</div>
+          <div className="card_rating">&#9733; {rating}</div>
         </div>
         <div className="card2">
           <div className="card_locate">
