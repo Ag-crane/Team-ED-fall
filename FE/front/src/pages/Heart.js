@@ -1,71 +1,67 @@
-import React from "react";
-import ListCard from "../components/Card/ListCard";
+import React, { useState, useEffect } from "react";
+import HeartCard from "../components/Card/HeartCard";
+import Pagination from "@mui/material/Pagination";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import "../styles/pages/Heart.css";
 
 function Heart() {
-  const cardData = [
-    {
-      title: "합주실1",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-    {
-      title: "합주실2",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-    {
-      title: "합주실3",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-    {
-      title: "합주실4",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-    {
-      title: "합주실5",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-    {
-      title: "합주실6",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-    {
-      title: "합주실7",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-    {
-      title: "합주실8",
-      cost: "가격",
-      locate: "위치",
-      content: "사진 추가 예정",
-    },
-  ];
+  const [favoriteRooms, setFavoriteRooms] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [resultsPerPage] = useState(10);
 
-  const renderCards = () => {
-    return cardData.map((card, index) => (
-      <ListCard
+  useEffect(() => {
+    async function fetchFavoriteRooms() {
+      const userId = "1"; // userId가 1이라고 가정
+
+      try {
+        const response = await fetch(
+          `http://43.200.181.187:8080/user-favorites/${userId}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch favorite rooms");
+        }
+
+        const favoriteRoomsData = await response.json();
+        setFavoriteRooms(
+          favoriteRoomsData.map((room) => ({
+            id: String(room.id),
+            name: room.name,
+            fullAddress: room.fullAddress,
+            imageUrl: room.imageUrl,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching favorite rooms:", error);
+      }
+    }
+
+    fetchFavoriteRooms();
+  }, []);
+
+  const indexOfLastResult = currentPage * resultsPerPage;
+  const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+  const currentResults = favoriteRooms.slice(
+    indexOfFirstResult,
+    indexOfLastResult
+  );
+  const totalPages = Math.ceil(favoriteRooms.length / resultsPerPage);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const renderFavoriteCards = () => {
+    console.log("favoriteRooms:", favoriteRooms);
+
+    return favoriteRooms.map((room, index) => (
+      <HeartCard
         key={index}
-        title={card.title}
-        cost={card.cost}
-        locate={card.locate}
-        content={card.content}
+        id={room.id}
+        name={room.name}
+        fullAddress={room.fullAddress}
+        imageUrl={room.imageUrl}
       />
     ));
   };
@@ -73,16 +69,15 @@ function Heart() {
   return (
     <div>
       <Header />
-      <div className="heart_title">
-        찜한 합주실
-        <span className="icon-container">
-          <FontAwesomeIcon
-            icon={faHeart}
-            className="far fa-heart heart-icon"
-          />
-        </span>
+      <div className="heart_title">찜한 합주실</div>
+      <div className="card_pack init_height">{renderFavoriteCards()}</div>
+      <div className="pagination">
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
       </div>
-      <div className="card_pack">{renderCards()}</div>
       <Footer />
     </div>
   );
