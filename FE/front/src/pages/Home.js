@@ -41,14 +41,6 @@ function Home() {
     }
   }, [selectedDate, selectedTimes, selectedRegion]);
 
-  // const fetchDB = async () => {
-  //   const response = await fetch(`http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`);
-  //   if (!response.ok) {
-  //     throw new Error('Fast URL response error');
-  //   }
-  //   return response.json();
-  // };
-
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -73,25 +65,23 @@ function Home() {
     return `${String(hours).padStart(2, "0")}:${minute}:00`;
   };
 
-  async function fetchData() {
-    try {
-        const sortedTimes = selectedTimes.sort();
-        const startTimeParam = formatTime(sortedTimes[0]);
-        const endTimeParam = formatTime(sortedTimes[sortedTimes.length - 1], 1);
-        const dateParam = formatDate(selectedDate);
+  const fetchDB = async () => {
+    const response = await fetch(`http://43.200.181.187:8080/rooms/available/location2?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`);
+    if (!response.ok) {
+      throw new Error('DB fetch error');
+    }
+    return response.json();
+  };
 
-        console.log("Selected Start Time:", startTimeParam);
-        console.log("Selected End Time:", endTimeParam);
-        console.log("Region:", selectedRegion);
-
-        const response = await fetch(
-          `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
-          );
-
-        if (!response.ok) {
-          const errorMessage = `Failed to fetch data. Status: ${response.status} ${response.statusText}`;
-          throw new Error(errorMessage);
-        }
+  const fetchCrawler = async () => {
+    const response = await fetch(
+      `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`
+    );
+    if (!response.ok) {
+      throw new Error('Crawler fetch error');
+    }
+    return response.json();
+  }
 
   function groupCards(data) {
     return data.reduce((acc, card) => {
@@ -104,9 +94,18 @@ function Home() {
     }, {});
   }
 
-        setGroupedCards(newGroupedCards);
-        setCards(data);
-        setIsDataFetched(true);
+  async function fetchData() {
+    try {
+      const data = await fetchDB();
+      setGroupedCards(groupCards(data));
+      setCards(data);
+      setIsDataFetched(true);
+      
+      if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
+        const crawlerData = await fetchCrawler();
+        setCards(crawlerData);
+        setGroupedCards(groupCards(crawlerData));
+      }
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
