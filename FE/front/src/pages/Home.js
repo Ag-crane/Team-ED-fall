@@ -80,16 +80,16 @@ function Home() {
           throw new Error(errorMessage);
         }
 
-        const data = await response.json();
-
-        const newGroupedCards = data.reduce((acc, card) => {
-          const { practiceRoomName, roomName } = card;
-          if (!acc[practiceRoomName]) {
-            acc[practiceRoomName] = [];
-          }
-          acc[practiceRoomName].push(roomName);
-          return acc;
-        }, {});
+  function groupCards(data) {
+    return data.reduce((acc, card) => {
+      const { practiceRoomName, roomName } = card;
+      if (!acc[practiceRoomName]) {
+        acc[practiceRoomName] = [];
+      }
+      acc[practiceRoomName].push(roomName);
+      return acc;
+    }, {});
+  }
 
         setGroupedCards(newGroupedCards);
         setCards(data);
