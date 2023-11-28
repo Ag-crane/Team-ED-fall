@@ -13,11 +13,14 @@ function Home() {
   const [selectedRegion, setSelectedRegion] = useState("default");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimes, setSelectedTimes] = useState([]);
+  const [formattedDate, setFormattedDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [isButtonActive, setIsButtonActive] = useState(false);
+  const [isDataFetched, setIsDataFetched] = useState(false);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
-  const [isButtonActive, setIsButtonActive] = useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
 
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
@@ -26,6 +29,16 @@ function Home() {
 
     setIsButtonActive(isValidDate && isValidTimes && isRegionSelected);
 
+    if (isValidDate && isValidTimes) {
+      const sortedTimes = [...selectedTimes].sort();
+      const newStartTime = formatTime(sortedTimes[0]);
+      const newEndTime = formatTime(sortedTimes[sortedTimes.length - 1], 1);
+      const newFormattedDate = formatDate(selectedDate);
+
+      setFormattedDate(newFormattedDate);
+      setStartTime(newStartTime);
+      setEndTime(newEndTime);
+    }
   }, [selectedDate, selectedTimes, selectedRegion]);
 
   // const fetchDB = async () => {
