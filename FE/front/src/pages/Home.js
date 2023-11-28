@@ -26,51 +26,42 @@ function Home() {
 
     setIsButtonActive(isValidDate && isValidTimes && isRegionSelected);
 
-    //   if (
-    //     selectedDate &&
-    //     selectedTimes.length > 0 &&
-    //     selectedRegion !== "default"
-    //   ) {
-    //     fetchData();
-    //   }
-    // }, [selectedDate, selectedTimes, selectedRegion]);
   }, [selectedDate, selectedTimes, selectedRegion]);
+
+  // const fetchDB = async () => {
+  //   const response = await fetch(`http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`);
+  //   if (!response.ok) {
+  //     throw new Error('Fast URL response error');
+  //   }
+  //   return response.json();
+  // };
+
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatTime = (timeString, addHour = 0) => {
+    const [hour, minute, meridian] = timeString.split(/:|\s/);
+    let hours = parseInt(hour, 10);
+
+    if (addHour) {
+      hours += 1;
+    }
+
+    if (meridian === "PM" && hours < 12) {
+      hours += 12;
+    } else if (meridian === "AM" && hours === 12) {
+      hours = 0;
+    }
+
+    return `${String(hours).padStart(2, "0")}:${minute}:00`;
+  };
 
   async function fetchData() {
     try {
-      const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      };
-
-      const formatTime = (timeString, addHour = 0) => {
-        const [hour, minute, meridian] = timeString.split(/:|\s/);
-        let hours = parseInt(hour, 10);
-
-        if (addHour) {
-          hours += 1;
-        }
-
-        if (meridian === "PM" && hours < 12) {
-          hours += 12;
-        } else if (meridian === "AM" && hours === 12) {
-          hours = 0;
-        }
-
-        return `${String(hours).padStart(2, "0")}:${minute}:00`;
-      };
-
-      const isValidDate = selectedDate instanceof Date;
-      const isValidTimes =
-        selectedTimes.length > 0 &&
-        selectedTimes.every((time) => {
-          const date = new Date(`2000-01-01 ${time}`);
-          return !isNaN(date.getTime());
-        });
-
-      if (isValidDate && isValidTimes && selectedRegion !== "default") {
         const sortedTimes = selectedTimes.sort();
         const startTimeParam = formatTime(sortedTimes[0]);
         const endTimeParam = formatTime(sortedTimes[sortedTimes.length - 1], 1);
@@ -81,8 +72,8 @@ function Home() {
         console.log("Region:", selectedRegion);
 
         const response = await fetch(
-          `http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
-        );
+          `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
+          );
 
         if (!response.ok) {
           const errorMessage = `Failed to fetch data. Status: ${response.status} ${response.statusText}`;
@@ -103,9 +94,6 @@ function Home() {
         setGroupedCards(newGroupedCards);
         setCards(data);
         setIsDataFetched(true);
-      } else {
-        console.error("Invalid date or times");
-      }
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
