@@ -52,18 +52,21 @@ function Home() {
     const [hour, minute, meridian] = timeString.split(/:|\s/);
     let hours = parseInt(hour, 10);
 
-    if (addHour) {
-      hours += 1;
+    // AM/PM을 기반으로 24시간 형식으로 변환
+    if (meridian === "PM" && hours < 12) {
+        hours += 12;
+    } else if (meridian === "AM" && hours === 12) {
+        hours = 0;
     }
 
-    if (meridian === "PM" && hours < 12) {
-      hours += 12;
-    } else if (meridian === "AM" && hours === 12) {
-      hours = 0;
+    // 시간 추가
+    if (addHour) {
+        hours = (hours + 1) % 24; // 23시에 1시간을 추가하면 0시(24시)가 되어야 함
     }
 
     return `${String(hours).padStart(2, "0")}:${minute}:00`;
-  };
+};
+
 
   const fetchDB = async () => {
     const response = await fetch(`http://43.200.181.187:8080/rooms/available/location2?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`);
@@ -101,11 +104,11 @@ function Home() {
       setCards(data);
       setIsDataFetched(true);
       
-      if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
-        const crawlerData = await fetchCrawler();
-        setCards(crawlerData);
-        setGroupedCards(groupCards(crawlerData));
-      }
+      // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
+      //   const crawlerData = await fetchCrawler();
+      //   setCards(crawlerData);
+      //   setGroupedCards(groupCards(crawlerData));
+      // }
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
