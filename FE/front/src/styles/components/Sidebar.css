@@ -11,6 +11,7 @@
 }
 
 .sidebar.open {
+  width: 300px;
   left: 0;
 }
 
@@ -19,7 +20,7 @@
   justify-content: flex-start; 
   align-items: center;
   height: 150px;
-  padding-left: 20px;
+  padding-left: 50px;
   background-color: rgba(56, 85, 106, 0.5);
 }
 
