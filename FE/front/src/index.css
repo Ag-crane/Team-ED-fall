@@ -18,3 +18,14 @@ background-color: #38556A;  /*rgba(56, 85, 106);*/
 background-color: #4C6983;  /*rgba(76, 105, 131);*/
 background-color: #B6FFF9;  /*rgba(182, 255, 249);*/
 }
+
+#root{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#wrap{
+  width: 1200px;
+}

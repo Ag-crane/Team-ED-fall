@@ -54,37 +54,43 @@ function Home() {
 
     // AM/PM을 기반으로 24시간 형식으로 변환
     if (meridian === "PM" && hours < 12) {
-        hours += 12;
+      hours += 12;
     } else if (meridian === "AM" && hours === 12) {
-        hours = 0;
+      hours = 0;
     }
 
     // 시간 추가
     if (addHour) {
-        hours = (hours + 1) % 24; // 23시에 1시간을 추가하면 0시(24시)가 되어야 함
+      hours += 1;
     }
 
-    return `${String(hours).padStart(2, "0")}:${minute}:00`;
-};
-
+    // 24시간 형식 조정
+    if (hours === 24) {
+      return `00:00:00`; // 다음 날 00:00:00
+    } else {
+      return `${String(hours).padStart(2, "0")}:${minute}:00`;
+    }
+  };
 
   const fetchDB = async () => {
-    const response = await fetch(`http://43.200.181.187:8080/rooms/available/location2?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`);
+    const response = await fetch(
+      `http://43.200.181.187:8080/rooms/available/location2?date=${formattedDate}&startTimeString=${startTime}&endTimeString=${endTime}&gu=${selectedRegion}`
+    );
     if (!response.ok) {
-      throw new Error('DB fetch error');
+      throw new Error("DB fetch error");
     }
     return response.json();
   };
 
   const fetchCrawler = async () => {
     const response = await fetch(
-      `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`
+      `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${formattedDate}&startTimeString=${startTime}&endTimeString=${endTime}&gu=${selectedRegion}`
     );
     if (!response.ok) {
-      throw new Error('Crawler fetch error');
+      throw new Error("Crawler fetch error");
     }
     return response.json();
-  }
+  };
 
   function groupCards(data) {
     return data.reduce((acc, card) => {
@@ -103,7 +109,7 @@ function Home() {
       setGroupedCards(groupCards(data));
       setCards(data);
       setIsDataFetched(true);
-      
+
       // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
       //   const crawlerData = await fetchCrawler();
       //   setCards(crawlerData);

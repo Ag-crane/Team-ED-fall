@@ -66,7 +66,7 @@ function About() {
   const renderFilteredCards = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-
+    
     const cardsToRender = selectedFilter
       ? filteredCardData.slice(startIndex, endIndex)
       : cardData.slice(startIndex, endIndex);
@@ -111,8 +111,7 @@ function About() {
 
         const filteredPageData = responseData.content.filter(
           (card) =>
-            !selectedValue ||
-            card.commonAddress.trim() === selectedValue.trim()
+            !selectedValue || card.commonAddress.trim() === selectedValue.trim()
         );
 
         filteredCardData = [...filteredCardData, ...filteredPageData];
@@ -164,7 +163,9 @@ function About() {
 
     try {
       const response = await fetch(
-        `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=${newPage - 1}&size=${itemsPerPage}`
+        `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=${
+          newPage - 1
+        }&size=${itemsPerPage}`
       );
 
       if (!response.ok) {

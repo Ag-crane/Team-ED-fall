@@ -1,6 +1,6 @@
 .footer {
   clear: both;
-  /* background-color: rgba(76, 105, 131, 0.3); */
+  background-color: rgba(76, 105, 131, 0.1);
   color: rgba(39, 57, 82);
   margin-top: 60px;
   padding: 10px;
@@ -14,4 +14,5 @@
   .teamname{
     display: flex;
     justify-content: center;
+    color: gray;
   }
