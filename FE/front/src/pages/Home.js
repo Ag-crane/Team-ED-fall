@@ -74,7 +74,7 @@ function Home() {
 
   const fetchDB = async () => {
     const response = await fetch(
-      `http://43.200.181.187:8080/rooms/available/location2?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`
+      `http://43.200.181.187:8080/rooms/available/location2?date=${formattedDate}&startTimeString=${startTime}&endTimeString=${endTime}&gu=${selectedRegion}`
     );
     if (!response.ok) {
       throw new Error("DB fetch error");
@@ -84,7 +84,7 @@ function Home() {
 
   const fetchCrawler = async () => {
     const response = await fetch(
-      `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`
+      `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${formattedDate}&startTimeString=${startTime}&endTimeString=${endTime}&gu=${selectedRegion}`
     );
     if (!response.ok) {
       throw new Error("Crawler fetch error");
