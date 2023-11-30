@@ -8,6 +8,7 @@ function ListCard({ cardData }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
+    id,
     name,
     commonAddress,
     fullAddress,
@@ -20,6 +21,13 @@ function ListCard({ cardData }) {
   } = cardData;
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+
+    // Log the name and id when the favorite status is toggled
+    if (!isFavorite) {
+      console.log(`Added to favorites: ${name}, ID: ${id}`);
+    } else {
+      console.log(`Removed from favorites: ${name}, ID: ${id}`);
+    }
   };
 
   const toggleModal = () => {

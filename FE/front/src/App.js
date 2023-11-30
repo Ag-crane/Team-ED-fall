@@ -11,11 +11,7 @@ import Search from "./pages/Search.js";
 function App() {
   return (
     <Router>
-      <div>
-        <nav>
-          <Link to="/"></Link>
-        </nav>
-
+      <div id="wrap">
         <Routes>
           {" "}
           <Route path="/" element={<Home />} />

@@ -6,7 +6,6 @@ import Filter from "../components/Dropdown/Filter";
 import Pagination from "@mui/material/Pagination";
 import "../styles/pages/About.css";
 
-// 오류
 function About() {
   const [cardData, setCardData] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -16,6 +15,7 @@ function About() {
   const [uniqueCommonAddresses, setUniqueCommonAddresses] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [filteredTotalPages, setFilteredTotalPages] = useState(1);
+  const [favoriteRooms, setFavoriteRooms] = useState([]);
 
   useEffect(() => {
     async function fetchAllCardData() {
@@ -66,16 +66,16 @@ function About() {
   const renderFilteredCards = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-  
+    
     const cardsToRender = selectedFilter
       ? filteredCardData.slice(startIndex, endIndex)
       : cardData.slice(startIndex, endIndex);
-    console.log("cardsToRender: ",cardsToRender)
 
     return cardsToRender.map((cardData, index) => (
       <ListCard
         key={index}
         cardData={cardData}
+        onToggleFavorite={() => toggleFavorite(cardData.practiceRoomID)}
       />
     ));
   };
@@ -83,66 +83,97 @@ function About() {
   const handleFilterChange = async (selectedValue) => {
     setSelectedFilter(selectedValue);
     setCurrentPage(1);
-  
+
     try {
       const totalResponse = await fetch(
         `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=0&size=${itemsPerPage}`
       );
-  
+
       if (!totalResponse.ok) {
         throw new Error("Failed to fetch total data");
       }
-  
+
       const totalData = await totalResponse.json();
       const totalElements = totalData.totalElements;
-  
+
       let filteredCardData = [];
-  
+
       for (let page = 0; page < totalData.totalPages; page++) {
         const response = await fetch(
           `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=${page}&size=${itemsPerPage}`
         );
-  
+
         if (!response.ok) {
           throw new Error(`Failed to fetch data for page ${page}`);
         }
-  
+
         const responseData = await response.json();
-  
+
         const filteredPageData = responseData.content.filter(
           (card) =>
-            !selectedValue ||
-            card.commonAddress.trim() === selectedValue.trim()
+            !selectedValue || card.commonAddress.trim() === selectedValue.trim()
         );
-  
+
         filteredCardData = [...filteredCardData, ...filteredPageData];
       }
-  
+
       const filteredTotalPages = Math.ceil(
         filteredCardData.length / itemsPerPage
       );
-  
+
       setFilteredCardData(filteredCardData);
       setFilteredTotalPages(filteredTotalPages || 1);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  
-  const handlePageChange = async (event, newPage) => {
-    setCurrentPage(newPage);
-  
+
+  const toggleFavorite = async (practiceRoomID) => {
+    // Replace "yourUserId" with the actual user ID
+    const userId = "1";
+
     try {
       const response = await fetch(
-        `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=${newPage - 1}&size=${itemsPerPage}`
+        `http://43.200.181.187:8080/user-favorites/toggle/${userId}/${practiceRoomID}`,
+        {
+          method: "POST",
+        }
       );
-  
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle favorite status");
+      }
+
+      // Fetch updated favorite rooms after toggling
+      const updatedFavoriteRoomsResponse = await fetch(`http://43.200.181.187:8080/user-favorites/${userId}`);
+
+      if (!updatedFavoriteRoomsResponse.ok) {
+        throw new Error("Failed to fetch updated favorite rooms");
+      }
+
+      const updatedFavoriteRoomsData = await updatedFavoriteRoomsResponse.json();
+      setFavoriteRooms(updatedFavoriteRoomsData);
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
+    }
+  };
+
+  const handlePageChange = async (event, newPage) => {
+    setCurrentPage(newPage);
+
+    try {
+      const response = await fetch(
+        `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=${
+          newPage - 1
+        }&size=${itemsPerPage}`
+      );
+
       if (!response.ok) {
         throw new Error(`Failed to fetch data for page ${newPage}`);
       }
-  
+
       const responseData = await response.json();
-  
+
       const filteredPageData = selectedFilter
         ? responseData.content.filter(
             (card) => card.commonAddress.trim() === selectedFilter.trim()
@@ -151,9 +182,9 @@ function About() {
 
       const startIndex = (newPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
-      
+
       const cardsForCurrentPage = filteredPageData.slice(startIndex, endIndex);
-  
+
       setFilteredCardData(cardsForCurrentPage);
     } catch (error) {
       console.error("Error fetching data:", error);

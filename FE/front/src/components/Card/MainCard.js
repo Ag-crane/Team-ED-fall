@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../styles/components/Card/MainCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import Modal from "../Modal";
 
 function MainCard({ card }) {
   if (!card) {
@@ -15,8 +16,8 @@ function MainCard({ card }) {
       ],
     };
   }
-
-  const { practiceRoomName, address, roomInfoList, imageUrl } = card;
+  const { practiceRoomId, practiceRoomName, address, roomInfoList, imageUrl } =
+    card;
 
   // 이름순 정렬
   const sortedRoomInfoList = roomInfoList.sort((a, b) =>
@@ -43,18 +44,23 @@ function MainCard({ card }) {
         {sortedRoomInfoList && sortedRoomInfoList.length > 0 && (
           <div className="scrollBar">
             <ul>
-              {sortedRoomInfoList.map((roomInfo) => (
-                <li className="li_room" key={roomInfo.roomId}>
-                  <div className="room_info">
-                    <div className="room_name">{roomInfo.roomName}</div>
-                    <div className="room_price">
-                      {roomInfo.price !== null
-                        ? `${roomInfo.price}원`
-                        : "정보없음"}
-                    </div>
-                  </div>
-                </li>
-              ))}
+              {sortedRoomInfoList.map((roomInfo) => {
+                const bookingUrl = `https://m.booking.naver.com/booking/10/bizes/${practiceRoomId}/items/${roomInfo.roomId}`;
+                return (
+                  <a href={bookingUrl} target="_blank" key={roomInfo.roomId}>
+                    <li className="li_room">
+                      <div className="room_info">
+                        <div className="room_name">{roomInfo.roomName}</div>
+                        <div className="room_price">
+                          {roomInfo.price !== null
+                            ? `${roomInfo.price}원`
+                            : "정보없음"}
+                        </div>
+                      </div>
+                    </li>
+                  </a>
+                );
+              })}
             </ul>
           </div>
         )}

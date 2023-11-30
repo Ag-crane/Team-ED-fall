@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 @RestController
+@CrossOrigin("*")
 public class StartController {
 
 
@@ -38,7 +40,7 @@ public class StartController {
     }
 
     private CrawlerResultDto[] runCrawler(String commonAddress, String date) throws IOException, InterruptedException {
-        String crawlerPath = "/Users/macbookpro/Downloads/Team-ED-fall-develop/crawler";
+        String crawlerPath = "/Users/macbookpro/Downloads/Team-ED-fall-develop2/crawler";
         String crawlerScript = "realtime-crawler-parent.js";
         String resultsFilePath = crawlerPath + "/results.json";
         String command = "node " + crawlerScript + " " + commonAddress + " " + date;
