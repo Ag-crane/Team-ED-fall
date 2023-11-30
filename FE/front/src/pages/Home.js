@@ -54,24 +54,23 @@ function Home() {
 
     // AM/PM을 기반으로 24시간 형식으로 변환
     if (meridian === "PM" && hours < 12) {
-        hours += 12;
+      hours += 12;
     } else if (meridian === "AM" && hours === 12) {
-        hours = 0;
+      hours = 0;
     }
 
     // 시간 추가
     if (addHour) {
-        hours += 1;
+      hours += 1;
     }
 
     // 24시간 형식 조정
     if (hours === 24) {
-        return `00:00:00`; // 다음 날 00:00:00
+      return `00:00:00`; // 다음 날 00:00:00
     } else {
-        return `${String(hours).padStart(2, "0")}:${minute}:00`;
+      return `${String(hours).padStart(2, "0")}:${minute}:00`;
     }
-};
-
+  };
 
   const fetchDB = async () => {
     const response = await fetch(
