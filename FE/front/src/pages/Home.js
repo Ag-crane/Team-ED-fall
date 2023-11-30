@@ -13,11 +13,14 @@ function Home() {
   const [selectedRegion, setSelectedRegion] = useState("default");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimes, setSelectedTimes] = useState([]);
+  const [formattedDate, setFormattedDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [isButtonActive, setIsButtonActive] = useState(false);
+  const [isDataFetched, setIsDataFetched] = useState(false);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
-  const [isButtonActive, setIsButtonActive] = useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
 
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
@@ -26,86 +29,86 @@ function Home() {
 
     setIsButtonActive(isValidDate && isValidTimes && isRegionSelected);
 
-    //   if (
-    //     selectedDate &&
-    //     selectedTimes.length > 0 &&
-    //     selectedRegion !== "default"
-    //   ) {
-    //     fetchData();
-    //   }
-    // }, [selectedDate, selectedTimes, selectedRegion]);
+    if (isValidDate && isValidTimes) {
+      const sortedTimes = [...selectedTimes].sort();
+      const newStartTime = formatTime(sortedTimes[0]);
+      const newEndTime = formatTime(sortedTimes[sortedTimes.length - 1], 1);
+      const newFormattedDate = formatDate(selectedDate);
+
+      setFormattedDate(newFormattedDate);
+      setStartTime(newStartTime);
+      setEndTime(newEndTime);
+    }
   }, [selectedDate, selectedTimes, selectedRegion]);
+
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatTime = (timeString, addHour = 0) => {
+    const [hour, minute, meridian] = timeString.split(/:|\s/);
+    let hours = parseInt(hour, 10);
+
+    // AM/PM을 기반으로 24시간 형식으로 변환
+    if (meridian === "PM" && hours < 12) {
+        hours += 12;
+    } else if (meridian === "AM" && hours === 12) {
+        hours = 0;
+    }
+
+    // 시간 추가
+    if (addHour) {
+        hours = (hours + 1) % 24; // 23시에 1시간을 추가하면 0시(24시)가 되어야 함
+    }
+
+    return `${String(hours).padStart(2, "0")}:${minute}:00`;
+};
+
+
+  const fetchDB = async () => {
+    const response = await fetch(`http://43.200.181.187:8080/rooms/available/location2?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`);
+    if (!response.ok) {
+      throw new Error('DB fetch error');
+    }
+    return response.json();
+  };
+
+  const fetchCrawler = async () => {
+    const response = await fetch(
+      `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${formattedDate}&startTime=${startTime}&endTime=${endTime}&gu=${selectedRegion}`
+    );
+    if (!response.ok) {
+      throw new Error('Crawler fetch error');
+    }
+    return response.json();
+  }
+
+  function groupCards(data) {
+    return data.reduce((acc, card) => {
+      const { practiceRoomName, roomName } = card;
+      if (!acc[practiceRoomName]) {
+        acc[practiceRoomName] = [];
+      }
+      acc[practiceRoomName].push(roomName);
+      return acc;
+    }, {});
+  }
 
   async function fetchData() {
     try {
-      const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      };
-
-      const formatTime = (timeString, addHour = 0) => {
-        const [hour, minute, meridian] = timeString.split(/:|\s/);
-        let hours = parseInt(hour, 10);
-
-        if (addHour) {
-          hours += 1;
-        }
-
-        if (meridian === "PM" && hours < 12) {
-          hours += 12;
-        } else if (meridian === "AM" && hours === 12) {
-          hours = 0;
-        }
-
-        return `${String(hours).padStart(2, "0")}:${minute}:00`;
-      };
-
-      const isValidDate = selectedDate instanceof Date;
-      const isValidTimes =
-        selectedTimes.length > 0 &&
-        selectedTimes.every((time) => {
-          const date = new Date(`2000-01-01 ${time}`);
-          return !isNaN(date.getTime());
-        });
-
-      if (isValidDate && isValidTimes && selectedRegion !== "default") {
-        const sortedTimes = selectedTimes.sort();
-        const startTimeParam = formatTime(sortedTimes[0]);
-        const endTimeParam = formatTime(sortedTimes[sortedTimes.length - 1], 1);
-        const dateParam = formatDate(selectedDate);
-
-        console.log("Selected Start Time:", startTimeParam);
-        console.log("Selected End Time:", endTimeParam);
-        console.log("Region:", selectedRegion);
-
-        const response = await fetch(
-          `http://43.200.181.187:8080/rooms/available/location2?date=${dateParam}&startTime=${startTimeParam}&endTime=${endTimeParam}&gu=${selectedRegion}`
-        );
-
-        if (!response.ok) {
-          const errorMessage = `Failed to fetch data. Status: ${response.status} ${response.statusText}`;
-          throw new Error(errorMessage);
-        }
-
-        const data = await response.json();
-
-        const newGroupedCards = data.reduce((acc, card) => {
-          const { practiceRoomName, roomName } = card;
-          if (!acc[practiceRoomName]) {
-            acc[practiceRoomName] = [];
-          }
-          acc[practiceRoomName].push(roomName);
-          return acc;
-        }, {});
-
-        setGroupedCards(newGroupedCards);
-        setCards(data);
-        setIsDataFetched(true);
-      } else {
-        console.error("Invalid date or times");
-      }
+      const data = await fetchDB();
+      setGroupedCards(groupCards(data));
+      setCards(data);
+      setIsDataFetched(true);
+      
+      // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
+      //   const crawlerData = await fetchCrawler();
+      //   setCards(crawlerData);
+      //   setGroupedCards(groupCards(crawlerData));
+      // }
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
