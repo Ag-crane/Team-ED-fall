@@ -6,7 +6,6 @@ import Filter from "../components/Dropdown/Filter";
 import Pagination from "@mui/material/Pagination";
 import "../styles/pages/About.css";
 
-// 오류
 function About() {
   const [cardData, setCardData] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -16,6 +15,7 @@ function About() {
   const [uniqueCommonAddresses, setUniqueCommonAddresses] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [filteredTotalPages, setFilteredTotalPages] = useState(1);
+  const [favoriteRooms, setFavoriteRooms] = useState([]);
 
   useEffect(() => {
     async function fetchAllCardData() {
@@ -66,13 +66,17 @@ function About() {
   const renderFilteredCards = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
+    
     const cardsToRender = selectedFilter
       ? filteredCardData.slice(startIndex, endIndex)
       : cardData.slice(startIndex, endIndex);
-    console.log("cardsToRender: ", cardsToRender);
 
     return cardsToRender.map((cardData, index) => (
-      <ListCard key={index} cardData={cardData} />
+      <ListCard
+        key={index}
+        cardData={cardData}
+        onToggleFavorite={() => toggleFavorite(cardData.practiceRoomID)}
+      />
     ));
   };
 
@@ -121,6 +125,36 @@ function About() {
       setFilteredTotalPages(filteredTotalPages || 1);
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const toggleFavorite = async (practiceRoomID) => {
+    // Replace "yourUserId" with the actual user ID
+    const userId = "1";
+
+    try {
+      const response = await fetch(
+        `http://43.200.181.187:8080/user-favorites/toggle/${userId}/${practiceRoomID}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle favorite status");
+      }
+
+      // Fetch updated favorite rooms after toggling
+      const updatedFavoriteRoomsResponse = await fetch(`http://43.200.181.187:8080/user-favorites/${userId}`);
+
+      if (!updatedFavoriteRoomsResponse.ok) {
+        throw new Error("Failed to fetch updated favorite rooms");
+      }
+
+      const updatedFavoriteRoomsData = await updatedFavoriteRoomsResponse.json();
+      setFavoriteRooms(updatedFavoriteRoomsData);
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
     }
   };
 
