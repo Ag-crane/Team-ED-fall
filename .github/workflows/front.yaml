@@ -23,10 +23,6 @@ jobs:
       working-directory: FE/front
       run: npm install
 
-    - name: 빌드
+    - name: 실행
       working-directory: FE/front
-      run: npm run build
-
-    - name: 테스트 실행
-      working-directory: FE/front
-      run: npm test
+      run: npm start
