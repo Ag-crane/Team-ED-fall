@@ -20,13 +20,13 @@ jobs:
         node-version: '20'
 
     - name: 의존성 설치
-      working-directory: FE\front
+      working-directory: FE/front
       run: npm install
 
     - name: 빌드
-      working-directory: FE\front
+      working-directory: FE/front
       run: npm build
 
     - name: 테스트 실행
-      working-directory: FE\front
+      working-directory: FE/front
       run: npm test
