@@ -53,7 +53,7 @@ function Header() {
           <input
             className="inputSearch"
             type="text"
-            placeholder="검색어를 입력하세요"
+            placeholder="합주실 이름으로 검색"
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyDown={(e) => {
