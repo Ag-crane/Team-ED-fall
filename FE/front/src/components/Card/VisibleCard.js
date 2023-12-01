@@ -1,28 +1,20 @@
 import React, { useState } from "react";
-import "../../styles/components/Card/RatingCard.css";
+import "../../styles/components/Card/VisibleCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
-function RatingCard({ title, content, cost, locate, rating }) {
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
-
+function VisibleCard({ title, content, locate }) {
   return (
     <div className="container">
       <div className="title_box">
         <div className="card1">
           <div className="card_title">{title}</div>
-          <div className="card_rating">&#9733; {rating}</div>
         </div>
         <div className="card2">
-          <div className="rating_card_locate">
+          <div className="visible_card_locate">
             <FontAwesomeIcon icon={faMapMarkerAlt} fontSize={15} />
-             {locate}
+            {locate}
           </div>
-          
         </div>
       </div>
       <div className="content_box">
@@ -32,4 +24,4 @@ function RatingCard({ title, content, cost, locate, rating }) {
   );
 }
 
-export default RatingCard;
+export default VisibleCard;
