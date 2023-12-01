@@ -1,0 +1,29 @@
+name: 프론트엔드 CI 과제
+
+on:
+  push:
+    # Han-Byeol 브랜치에 푸시하면 작동
+    branches:
+      - Han-Byeol
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 레포지토리 체크아웃
+      uses: actions/checkout@v2
+
+    - name: Node.js 설정
+      uses: actions/setup-node@v2
+      with:
+        node-version: 'latest'
+
+    - name: 의존성 설치
+      run: npm install
+
+    - name: 빌드
+      run: npm build
+
+    - name: 테스트 실행
+      run: npm test
