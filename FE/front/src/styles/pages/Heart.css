@@ -28,3 +28,9 @@
   display: inline-block;
   vertical-align: middle;
 }
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

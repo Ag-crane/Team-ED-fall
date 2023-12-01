@@ -8,7 +8,7 @@ import "../styles/pages/Heart.css";
 function Heart() {
   const [favoriteRooms, setFavoriteRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [resultsPerPage] = useState(10);
+  const [resultsPerPage] = useState(8);
 
   useEffect(() => {
     async function fetchFavoriteRooms() {
@@ -55,7 +55,7 @@ function Heart() {
   const renderFavoriteCards = () => {
     console.log("favoriteRooms:", favoriteRooms);
 
-    return favoriteRooms.map((room, index) => (
+    return currentResults.map((room, index) => (
       <HeartCard
         key={index}
         id={room.id}

@@ -4,8 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal";
 
-function ListCard({ cardData }) {
-  const [isFavorite, setIsFavorite] = useState(false);
+const ListCard = ({ cardData, onToggleFavorite, favoriteRooms }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     id,
@@ -19,15 +18,12 @@ function ListCard({ cardData }) {
     bookingUrl,
     visitorReviewScore,
   } = cardData;
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
 
-    // Log the name and id when the favorite status is toggled
-    if (!isFavorite) {
-      console.log(`Added to favorites: ${name}, ID: ${id}`);
-    } else {
-      console.log(`Removed from favorites: ${name}, ID: ${id}`);
-    }
+  const isFavorite =
+    favoriteRooms && favoriteRooms.some((room) => room.id === id);
+
+  const toggleFavorite = () => {
+    onToggleFavorite(id);
   };
 
   const toggleModal = () => {
@@ -39,7 +35,6 @@ function ListCard({ cardData }) {
       <div className="title_box">
         <div className="card1">
           <div className="card_title">{name}</div>
-          {/* <div className="card_cost">{cost}</div> */}
         </div>
         <div className="card2">
           <div className="card_locate">
@@ -85,6 +80,6 @@ function ListCard({ cardData }) {
       </Modal>
     </div>
   );
-}
+};
 
 export default ListCard;

@@ -3,12 +3,12 @@
 }
 
 .rating_title {
-  display: flex;
-  margin-top: 20px;
-  margin-left: 50px;
-  padding: 5px;
-  background-color: rgba(56, 85, 106, 0.2);
-  width: fit-content;
+  margin-top: 50px;
+  text-align: center;
+  padding: 10px;
+  background-color: rgba(39, 57, 82);
+  color: white;
+  width: 300px;
   border-radius: 10px;
 }
 
@@ -20,6 +20,20 @@
   margin-top: -10px;
 }
 
+.visible_card_pack{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: -10px;
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .thumbs-up-icon {
   padding-left: 6px;
   font-size: 1.2em;
@@ -28,4 +42,14 @@
 .icon-container {
   display: inline-block;
   vertical-align: middle;
+}
+
+.custom_tooltip{
+  border: none;
+}
+
+.title_wrap{
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
