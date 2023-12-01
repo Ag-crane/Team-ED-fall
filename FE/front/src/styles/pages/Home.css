@@ -2,8 +2,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 20PX;
+  font-size: 20px;
   font-weight: 10;
+}
+
+.content {
+  margin-top: 20px;
 }
 
 .content-shifted .time_title {
@@ -20,32 +24,33 @@
 .content-shifted {
   display: flex;
   justify-content: space-around;
-  margin: 50px;
+  margin-left: 50px;
   align-items: center;
 }
 
-.shifted_selector{
+.shifted_selector {
   position: relative;
   z-index: -1;
 }
 
-.maincard_group{
+.maincard_group {
   width: 700px;
 }
 
-.maincard_box{
+.maincard_box {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   width: 800px;
+  min-height: 400px;
 }
 
-.datetime{
+.datetime {
   width: 300px;
 }
 
-.noroom_container{
+.noroom_container {
   margin-top: -10px;
   background-color: rgba(39, 57, 82);
   color: white;
@@ -54,7 +59,7 @@
   font-weight: bold;
 }
 
-.noroom_text{
+.noroom_text {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -62,7 +67,7 @@
   width: 400px;
 }
 
-.search_button{
+.search_button {
   margin-top: 20px;
   width: 100px;
   height: 40px;
@@ -73,11 +78,15 @@
   font-weight: bold;
 }
 
-.search_button:disabled{
+.search_button:disabled {
   background-color: rgba(39, 57, 82, 0.5);
   color: white;
   border-radius: 10px;
   font-size: 18px;
   font-weight: bold;
   cursor: not-allowed;
+}
+
+.hidden {
+  display: none;
 }

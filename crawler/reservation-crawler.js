@@ -1,10 +1,10 @@
-import { getMonthlyData } from "./module.js";
+import { getWeeklyData } from "./module.js";
 
 process.on('message', async (pairList) => {
     const startTime = Date.now();
     for (let pair of pairList) {
         try {
-            await getMonthlyData(pair.pr_id, pair.room_id);
+            await getWeeklyData(pair.pr_id, pair.room_id);
             process.send({ success: true, prId: pair.pr_id, roomId: pair.room_id });
         } catch (error) {
             process.send({ success: false, prId: pair.pr_id, roomId: pair.room_id, error: error.message });

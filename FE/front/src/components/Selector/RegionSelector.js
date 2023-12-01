@@ -17,7 +17,7 @@ const RegionSelector = ({ selectedRegion, onRegionChange }) => {
         <option value="동작구">동작구</option>
         <option value="마포구 동교동">마포구 동교동</option>
         <option value="마포구 서교동">마포구 서교동</option>
-        <option value="망원 연남 합정">망원, 연남, 합정</option>
+        <option value="망원,연남,합정">망원, 연남, 합정</option>
         <option value="서초구">서초구</option>
         <option value="성동구">성동구</option>
         <option value="송파구">송파구</option>
