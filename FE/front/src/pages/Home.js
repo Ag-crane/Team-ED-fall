@@ -22,6 +22,7 @@ function Home() {
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
+  const [afterSearch, setAfterSearch] = useState(false);
 
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
@@ -126,6 +127,7 @@ function Home() {
   const handleSearch = () => {
     if (isButtonActive) {
       fetchData();
+      setAfterSearch(true);
     }
   };
 
@@ -152,7 +154,7 @@ function Home() {
   return (
     <div>
       <Header />
-      <div className={`content ${cards.length > 0 ? "content-shifted" : ""}`}>
+      <div className={`content ${afterSearch ? "content-shifted" : ""}`}>
         <p className="time_title">원하는 지역, 날짜, 시간을 선택하세요</p>
         <div className="selector">
           <RegionSelector
@@ -182,48 +184,48 @@ function Home() {
               <Spinner />
             </div>
           ) : (
-            <div
-              className={`content-shifted ${
-                cards.length > 0 ? "content-shifted" : ""
-              }`}
-            >
-              {cards.length > 0 ? (
-                <div className="maincard_box">
-                  <div className="nav_buttons">
-                    <button onClick={prevCard}>
-                      <FontAwesomeIcon icon={faArrowLeft} />
-                    </button>
-                  </div>
-                  <div className="maincard_group">
-                    {hasMultipleRooms ? (
-                      <>
+            <div className="maincard_box">
+              <div className={`${afterSearch ? "content-shifted" : ""}`}>
+                {cards.length > 0 ? (
+                  <>
+                    <div className="nav_buttons">
+                      <button onClick={prevCard}>
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                      </button>
+                    </div>
+                    <div className="maincard_group">
+                      {hasMultipleRooms ? (
+                        <>
+                          <MainCard
+                            card={currentCard1}
+                            groupedCards={groupedCards}
+                          />
+                          <MainCard
+                            card={currentCard2}
+                            groupedCards={groupedCards}
+                          />
+                        </>
+                      ) : (
                         <MainCard
                           card={currentCard1}
                           groupedCards={groupedCards}
                         />
-                        <MainCard
-                          card={currentCard2}
-                          groupedCards={groupedCards}
-                        />
-                      </>
-                    ) : (
-                      <MainCard
-                        card={currentCard1}
-                        groupedCards={groupedCards}
-                      />
-                    )}
+                      )}
+                    </div>
+                    <div className="nav_buttons">
+                      <button onClick={nextCard}>
+                        <FontAwesomeIcon icon={faArrowRight} />
+                      </button>
+                    </div>
+                  </>
+                ) : afterSearch && cards.length === 0 ? (
+                  <div className="noroom_container">
+                    <p className="noroom_text">
+                      이용 가능한 합주실이 없습니다.
+                    </p>
                   </div>
-                  <div className="nav_buttons">
-                    <button onClick={nextCard}>
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="noroom_container">
-                  <p className="noroom_text">이용 가능한 합주실이 없습니다.</p>
-                </div>
-              )}
+                ) : null}
+              </div>
             </div>
           )}
         </div>
