@@ -36,9 +36,18 @@
   overflow-y: auto;
 }
 
+.modal-img-box{
+  display: flex;
+  justify-content: center;
+  width: 520px;
+  border: 1px black outset; 
+  
+}
+
 .modal-image {
   max-width: 100%;
   height: auto;
+  margin: 20px;
 }
 
 .modal-content button {
