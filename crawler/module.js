@@ -89,7 +89,7 @@ async function attemptCrawling(browser, connection, prId, roomId, date) {
         `Attempt ${attempt} failed for room: ${roomId}, Date: ${date}`
       );
       attempt++;
-      await delay(10000); // 대기 후 재시도
+      await delay(30000); // 대기 후 재시도
     }
   }
   return false; // 실패
@@ -119,7 +119,7 @@ async function retryFailedTask(browser, connection, task, maxAttempts) {
   );
 }
 
-async function getMonthlyData(prId, roomId) {
+async function getWeeklyData(prId, roomId) {
   let browser = await puppeteer.launch({ headless: true });
   const connection = await mysql.createConnection(dbConfig);
 
@@ -146,7 +146,7 @@ async function getMonthlyData(prId, roomId) {
         `Crawling successful for task number ${count}: prId: ${prId}, roomId: ${roomId}, Date: ${date}`
       );
     }
-
+    delay(3000)
     count++;
   }
 
@@ -202,9 +202,10 @@ function formatDate(date) {
 function getNextDays(days = 30) {
   let dates = [];
   // let currentDate = new Date();
+  // currentDate.setDate(currentDate.getDate() + 1);
   let currentDate = new Date(2023, 11, 1);
 
-  currentDate.setDate(currentDate.getDate() + 1);
+
 
   for (let i = 0; i < days; i++) {
     dates.push(formatDate(currentDate));
@@ -242,7 +243,7 @@ function splitArrayIntoChunks(array, numberOfChunks) {
 
 export {
   getAvailableTime,
-  getMonthlyData,
+  getWeeklyData,
   getRoomId,
   delay,
   splitArrayIntoChunks,
