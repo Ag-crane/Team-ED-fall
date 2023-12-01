@@ -178,7 +178,7 @@ function Home() {
             검색하기
           </button>
         </div>
-        <div>
+        <div className={afterSearch ? "" : "hidden"}>
           {isLoading ? (
             <div>
               <Spinner />

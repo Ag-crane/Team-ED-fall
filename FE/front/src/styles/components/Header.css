@@ -4,8 +4,9 @@
   justify-content: space-between;
   background-color: rgba(255, 255, 255, 0.23);
   color: rgb(0, 0, 0);
-  padding: 10px 20px;
+  padding: 20px 20px;
   width: 1200px;
+  border-bottom: lightgray solid 1px;
 }
 
 .title-center {
@@ -15,6 +16,7 @@
 
 .name {
   margin: 0;
+  font-size: 30px;
   font-weight: 10;
   cursor: pointer;
 }
@@ -24,7 +26,7 @@
   width: 250px;
 }
 
-.icon{
+.icon {
   font-size: 24px;
 }
 
@@ -41,7 +43,7 @@
   border: 1px solid #ccc;
   border-radius: 30px;
   font-size: 10px;
-  background-color: rgba(76, 105, 131, 0.2);;
+  background-color: rgba(76, 105, 131, 0.2);
   text-align: center;
 }
 
