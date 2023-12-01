@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import DateSelector from "../components/Selector/DateSelector";
 import TimeSelector from "../components/Selector/TimeSelector";
 import RegionSelector from "../components/Selector/RegionSelector";
+import Spinner from "../components/Spinner";
 import "../styles/pages/Home.css";
 
 function Home() {
@@ -17,7 +18,7 @@ function Home() {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [isButtonActive, setIsButtonActive] = useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
@@ -104,11 +105,11 @@ function Home() {
   }
 
   async function fetchData() {
+    setIsLoading(true);
     try {
       const data = await fetchDB();
       setGroupedCards(groupCards(data));
       setCards(data);
-      setIsDataFetched(true);
 
       // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
       //   const crawlerData = await fetchCrawler();
@@ -117,6 +118,8 @@ function Home() {
       // }
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -174,7 +177,11 @@ function Home() {
           </button>
         </div>
         <div>
-          {isDataFetched ? (
+          {isLoading ? (
+            <div>
+              <Spinner />
+            </div>
+          ) : (
             <div
               className={`content-shifted ${
                 cards.length > 0 ? "content-shifted" : ""
@@ -218,8 +225,6 @@ function Home() {
                 </div>
               )}
             </div>
-          ) : (
-            <div></div>
           )}
         </div>
       </div>
