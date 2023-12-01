@@ -33,6 +33,15 @@ function Rating() {
     fetchHighestRatedPracticeRooms();
     fetchAllPracticeLocations();
     getUserLocation();
+
+    return () => {
+      if (mapContainerRef.current) {
+        mapContainerRef.current.removeEventListener(
+          "moveend",
+          handleMapMoveEnd
+        );
+      }
+    };
   }, []);
 
   const fetchHighestRatedPracticeRooms = async () => {
@@ -140,12 +149,14 @@ function Rating() {
   useEffect(() => {
     if (mapContainerRef.current) {
       mapContainerRef.current.addEventListener("moveend", handleMapMoveEnd);
-
+  
       return () => {
-        mapContainerRef.current.removeEventListener(
-          "moveend",
-          handleMapMoveEnd
-        );
+        if (mapContainerRef.current) {
+          mapContainerRef.current.removeEventListener(
+            "moveend",
+            handleMapMoveEnd
+          );
+        }
       };
     }
   }, [mapContainerRef.current, locationData]);
