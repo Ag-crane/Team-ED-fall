@@ -23,10 +23,11 @@
 .main_card_title {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 12px;
   width: 100%;
   height: 40px;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: bold;
   text-align: center;
 }
@@ -47,9 +48,9 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding-left: 27px;
-  font-size: 10px;
-  width: 100%;
+  padding: 0px 10px;
+  font-size: 12px;
+  width: 90%;
 }
 
 .main_card_locate svg {
@@ -83,8 +84,13 @@
   border-bottom-right-radius: 14px;
   overflow: auto;
 }
-.main_img_box{
-  height: 130px;
+.main_img_box {
+  height: 150px;
+}
+
+.main_img_box > img {
+  width: 100%;
+  height: 100%;
 }
 
 .main_card1 {
@@ -109,7 +115,7 @@
   margin: 0;
 }
 
-ul{
+ul {
   padding-left: 0;
 }
 
@@ -129,27 +135,27 @@ ul{
 
 .room_info:hover {
   background-color: rgba(182, 255, 249, 0.7);
-  border-color: rgba(56, 85, 106,0.34);
+  border-color: rgba(56, 85, 106, 0.34);
   border-style: solid;
   border-width: 1px;
   cursor: pointer;
 }
 
-.room_name{
+.room_name {
   display: flex;
   justify-content: flex-start;
   width: 290px;
-  padding-left: 10px;
-  font-size: 15px;
+  padding-left: 12px;
+  font-size: 17px;
   font-weight: bold;
 }
 
-.room_price{
+.room_price {
   display: flex;
   justify-content: flex-end;
-  width: 70px;
-  padding-right: 10px;
-  font-size: 15px;
+  width: 120px;
+  padding-right: 12px;
+  font-size: 17px;
   font-style: italic;
 }
 
@@ -170,5 +176,5 @@ ul{
 }
 
 .scrollBar::-webkit-scrollbar-track {
-  background: rgba(76, 105, 131,);
+  background: rgba(76, 105, 131);
 }
