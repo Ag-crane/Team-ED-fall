@@ -1,31 +1,31 @@
-name: 프론트엔드 CI 과제
+# name: 프론트엔드 CI 과제
 
-on:
-  push:
-    branches:
-      - Han-Byeol
+# on:
+#   push:
+#     branches:
+#       - Han-Byeol
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: 레포지토리 체크아웃
-      uses: actions/checkout@v2
+#     steps:
+#     - name: 레포지토리 체크아웃
+#       uses: actions/checkout@v2
 
-    - name: Node.js 설정
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20'
+#     - name: Node.js 설정
+#       uses: actions/setup-node@v2
+#       with:
+#         node-version: '20'
 
-    - name: 의존성 설치
-      working-directory: FE/front
-      run: npm install
+#     - name: 의존성 설치
+#       working-directory: FE/front
+#       run: npm install
 
-    - name: 빌드
-      working-directory: FE/front
-      run: CI=false npm run build
+#     - name: 빌드
+#       working-directory: FE/front
+#       run: CI=false npm run build
 
-    - name: ESLint 실행
-      working-directory: FE/front
-      run: npm run lint
+#     - name: ESLint 실행
+#       working-directory: FE/front
+#       run: npm run lint
