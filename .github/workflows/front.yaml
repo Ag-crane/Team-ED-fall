@@ -2,7 +2,6 @@ name: 프론트엔드 CI 과제
 
 on:
   push:
-    # Han-Byeol 브랜치에 푸시하면 작동
     branches:
       - Han-Byeol
 
@@ -17,12 +16,20 @@ jobs:
     - name: Node.js 설정
       uses: actions/setup-node@v2
       with:
-        node-version: '20'
+        node-version: '14'
 
     - name: 의존성 설치
       working-directory: FE/front
       run: npm install
 
-    - name: 실행
+    - name: 빌드
       working-directory: FE/front
-      run: npm start
+      run: npm run build
+
+    - name: 테스트 실행
+      working-directory: FE/front
+      run: npm test
+
+    - name: ESLint 실행
+      working-directory: FE/front
+      run: npm run lint
