@@ -30,7 +30,7 @@ process.on("message", async (message) => {
         error: error.message,
       });
     }
-    delay(1000);
+    await delay(1000);
   }
 
   await browser.close();
