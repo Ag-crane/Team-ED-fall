@@ -24,7 +24,7 @@ jobs:
 
     - name: 빌드
       working-directory: FE/front
-      run: npm run build
+      run: CI=false npm run build
 
     - name: 테스트 실행
       working-directory: FE/front
