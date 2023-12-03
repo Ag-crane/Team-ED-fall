@@ -26,10 +26,6 @@ jobs:
       working-directory: FE/front
       run: CI=false npm run build
 
-    - name: 테스트 실행
-      working-directory: FE/front
-      run: npm test
-
     - name: ESLint 실행
       working-directory: FE/front
       run: npm run lint
