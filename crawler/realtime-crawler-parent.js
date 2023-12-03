@@ -5,24 +5,6 @@ import dbConfig from "./module.js";
 import mysql from "mysql2/promise";
 import axios from "axios";
 
-async function sendResultsToServer(data) {
-  try {
-    const response = await axios.post(
-      "http://yourserver.com/api/results",
-      data
-    );
-    console.log(`Results sent to server: ${response.statusText}`);
-  } catch (err) {
-    console.error("Error sending results to server:", err);
-  }
-}
-
-async function saveResultsToFile(data, filename) {
-  const jsonData = JSON.stringify(data, null, 4);
-  await writeFile(filename, jsonData, "utf8");
-  console.log(`Results saved to ${filename}`);
-}
-
 async function getRoomIdByCommonAddress(commonAddress) {
   const connection = await mysql.createConnection(dbConfig);
   const query = `
@@ -67,7 +49,7 @@ export async function realtimeCrawler(region, date) {
         console.log(`Child process exited with code ${code}`);
       });
     });
-    
+
     totalResults.push(...results);
   }
 
