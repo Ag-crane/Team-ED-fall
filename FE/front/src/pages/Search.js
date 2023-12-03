@@ -10,7 +10,7 @@ const Search = () => {
   const location = useLocation();
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [resultsPerPage] = useState(10);
+  const [resultsPerPage] = useState(8);
 
   const searchQuery = new URLSearchParams(location.search).get("query");
   const encodedSearchQuery = encodeURIComponent(searchQuery);

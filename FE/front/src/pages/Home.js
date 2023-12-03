@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import DateSelector from "../components/Selector/DateSelector";
 import TimeSelector from "../components/Selector/TimeSelector";
 import RegionSelector from "../components/Selector/RegionSelector";
+import Spinner from "../components/Spinner";
 import "../styles/pages/Home.css";
 
 function Home() {
@@ -17,10 +18,11 @@ function Home() {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [isButtonActive, setIsButtonActive] = useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
+  const [afterSearch, setAfterSearch] = useState(false);
 
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
@@ -104,11 +106,11 @@ function Home() {
   }
 
   async function fetchData() {
+    setIsLoading(true);
     try {
       const data = await fetchDB();
       setGroupedCards(groupCards(data));
       setCards(data);
-      setIsDataFetched(true);
 
       // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
       //   const crawlerData = await fetchCrawler();
@@ -117,12 +119,15 @@ function Home() {
       // }
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   const handleSearch = () => {
     if (isButtonActive) {
       fetchData();
+      setAfterSearch(true);
     }
   };
 
@@ -149,7 +154,7 @@ function Home() {
   return (
     <div>
       <Header />
-      <div className={`content ${cards.length > 0 ? "content-shifted" : ""}`}>
+      <div className={`content ${afterSearch ? "content-shifted" : ""}`}>
         <p className="time_title">원하는 지역, 날짜, 시간을 선택하세요</p>
         <div className="selector">
           <RegionSelector
@@ -173,53 +178,55 @@ function Home() {
             검색하기
           </button>
         </div>
-        <div>
-          {isDataFetched ? (
-            <div
-              className={`content-shifted ${
-                cards.length > 0 ? "content-shifted" : ""
-              }`}
-            >
-              {cards.length > 0 ? (
-                <div className="maincard_box">
-                  <div className="nav_buttons">
-                    <button onClick={prevCard}>
-                      <FontAwesomeIcon icon={faArrowLeft} />
-                    </button>
-                  </div>
-                  <div className="maincard_group">
-                    {hasMultipleRooms ? (
-                      <>
+        <div className={afterSearch ? "" : "hidden"}>
+          {isLoading ? (
+            <div>
+              <Spinner />
+            </div>
+          ) : (
+            <div className="maincard_box">
+              <div className={`${afterSearch ? "content-shifted" : ""}`}>
+                {cards.length > 0 ? (
+                  <>
+                    <div className="nav_buttons">
+                      <button onClick={prevCard}>
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                      </button>
+                    </div>
+                    <div className="maincard_group">
+                      {hasMultipleRooms ? (
+                        <>
+                          <MainCard
+                            card={currentCard1}
+                            groupedCards={groupedCards}
+                          />
+                          <MainCard
+                            card={currentCard2}
+                            groupedCards={groupedCards}
+                          />
+                        </>
+                      ) : (
                         <MainCard
                           card={currentCard1}
                           groupedCards={groupedCards}
                         />
-                        <MainCard
-                          card={currentCard2}
-                          groupedCards={groupedCards}
-                        />
-                      </>
-                    ) : (
-                      <MainCard
-                        card={currentCard1}
-                        groupedCards={groupedCards}
-                      />
-                    )}
+                      )}
+                    </div>
+                    <div className="nav_buttons">
+                      <button onClick={nextCard}>
+                        <FontAwesomeIcon icon={faArrowRight} />
+                      </button>
+                    </div>
+                  </>
+                ) : afterSearch && cards.length === 0 ? (
+                  <div className="noroom_container">
+                    <p className="noroom_text">
+                      이용 가능한 합주실이 없습니다.
+                    </p>
                   </div>
-                  <div className="nav_buttons">
-                    <button onClick={nextCard}>
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="noroom_container">
-                  <p className="noroom_text">이용 가능한 합주실이 없습니다.</p>
-                </div>
-              )}
+                ) : null}
+              </div>
             </div>
-          ) : (
-            <div></div>
           )}
         </div>
       </div>

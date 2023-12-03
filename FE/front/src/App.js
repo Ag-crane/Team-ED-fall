@@ -7,6 +7,7 @@ import Rating from "./pages/Rating.js";
 import Login from "./pages/Login.js";
 import Heart from "./pages/Heart.js";
 import Search from "./pages/Search.js";
+import Admin from "./pages/Admin.js";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/heart" element={<Heart />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/admin" element={<Admin />} />
           {" "}
         </Routes>
       </div>

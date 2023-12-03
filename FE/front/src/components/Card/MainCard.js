@@ -54,7 +54,7 @@ function MainCard({ card }) {
                         <div className="room_price">
                           {roomInfo.price !== null
                             ? `${roomInfo.price}원`
-                            : "정보없음"}
+                            : "가격정보없음"}
                         </div>
                       </div>
                     </li>
