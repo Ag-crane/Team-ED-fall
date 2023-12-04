@@ -193,11 +193,12 @@ function Rating() {
 
   const totalPages = Math.ceil(visibleLocations.length / pageSize);
 
-  const mapCenter = userLocation ? [userLocation.lat, userLocation.lng] : null;
-  //console.log('User location:', userLocation);
+  // const mapCenter = userLocation ? [userLocation.lat, userLocation.lng] : null;
+  // 배포시 HTTP에서는 사용할 수 없음
+  const mapCenter = [37.5599, 127.0027];
 
   useEffect(() => {
-    //console.log('Map Center Updated:', mapCenter);
+
   }, [mapCenter]);
 
   return (
