@@ -23,7 +23,7 @@ const SignIn = ({ isOpen, close }) => {
                       <div className="googleText">구글 계정으로 로그인</div>
                     </div>
                     <div className="kakao">
-                    <Link to="http://localhost:8080/oauth2/authorization/kakao">
+                    <Link to="http://43.200.181.187:8080/oauth2/authorization/kakao">
                         <div className="kakaoText" >카카오 계정으로 로그인</div>
                       </Link>
                     </div>
