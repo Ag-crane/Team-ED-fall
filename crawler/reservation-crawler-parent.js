@@ -13,7 +13,7 @@ const startTime = new Date();
 console.log("startTime: ", startTime);
 
 chunks.forEach((chunk) => {
-  const child = fork(path.join(__dirname, "reservation-crawler.js"));
+  const child = fork(path.join(__dirname, "reservation-crawler-child.js"));
 
   child.send(chunk);
 
