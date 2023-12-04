@@ -16,6 +16,7 @@ function About() {
   const [totalPages, setTotalPages] = useState(1);
   const [filteredTotalPages, setFilteredTotalPages] = useState(1);
   const [favoriteRooms, setFavoriteRooms] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -47,7 +48,7 @@ function About() {
         }
   
         const uniqueAddresses = [
-          ...new Set(allCardData.map((card) => card.commonAddress.trim())),
+          ...new Set(allCardData.map((card) => (card.commonAddress ? card.commonAddress.trim() : ''))),
         ].sort((a, b) => a.localeCompare(b));
   
         setUniqueCommonAddresses(uniqueAddresses);
@@ -141,8 +142,36 @@ function About() {
     }
   };
 
+  useEffect(() => {
+    async function fetchUserInfo() {
+      const token = localStorage.getItem("authToken");
+
+      if (token) {
+        try {
+          const response = await fetch("http://43.200.181.187:8080/user/me", {
+            method: "GET",  
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch user info");
+          }
+
+          const userData = await response.json();
+          setUserInfo(userData);
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      }
+    }
+
+    fetchUserInfo();
+  }, []);
+
   const toggleFavorite = async (practiceRoomsID) => {
-    const userId = "1";
+    const userId = userInfo?.id;
 
     try {
       const url = `http://43.200.181.187:8080/user-favorites/add/${userId}?practiceRoomsId=${practiceRoomsID}`;

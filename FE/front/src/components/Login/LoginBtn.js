@@ -21,7 +21,7 @@ class LoginBtn extends Component {
   render() {
     return (
       <>
-        <button className="to_login" onClick={this.openModal}>로그인/회원가입</button>
+        <button className="to_login" onClick={this.openModal}>로그인</button>
         <SignIn isOpen={this.state.isModalOpen} close={this.closeModal} />
       </>
     );
