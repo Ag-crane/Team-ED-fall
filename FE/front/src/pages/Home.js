@@ -86,7 +86,7 @@ function Home() {
 
   const fetchCrawler = async () => {
     const response = await fetch(
-      `http://43.200.181.187:8080/realtime-crawler/available-rooms?date=${formattedDate}&startTimeString=${startTime}&endTimeString=${endTime}&gu=${selectedRegion}`
+      `http://43.200.181.187:8080/realtime-crawler/available-rooms3?date=${formattedDate}&startTimeString=${startTime}&endTimeString=${endTime}&gu=${selectedRegion}`
     );
     if (!response.ok) {
       throw new Error("Crawler fetch error");
@@ -106,17 +106,29 @@ function Home() {
   }
 
   async function fetchData() {
+    console.log(selectedRegion)
     setIsLoading(true);
     try {
-      const data = await fetchDB();
-      setGroupedCards(groupCards(data));
-      setCards(data);
 
       // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
-      //   const crawlerData = await fetchCrawler();
+      //   const crawlerData = await fetchDB();
       //   setCards(crawlerData);
       //   setGroupedCards(groupCards(crawlerData));
       // }
+      // const data = await fetchCrawler();
+      // setCards(data);
+      // setGroupedCards(groupCards(data));
+
+      const data = await fetchDB();
+      setCards(data);
+      setGroupedCards(groupCards(data));
+      
+      if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원,연남,합정"){
+        const crawlerData = await fetchCrawler();
+        setCards(crawlerData);
+        setGroupedCards(groupCards(crawlerData));
+      }
+
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
