@@ -19,14 +19,10 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "$SERVER_KEY" > ~/.ssh/id_rsa
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy to Server
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_KEY: ${{ secrets.SERVER_SSH_KEY }}
         run: |
-          ssh -i $SERVER_KEY $SERVER_USER@$SERVER_IP "cd /home/ubuntu/Team-ED-fall && git pull origin develop"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /home/ubuntu/Team-ED-fall && git pull origin develop"
