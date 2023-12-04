@@ -171,7 +171,7 @@ function About() {
   }, []);
 
   const toggleFavorite = async (practiceRoomsID) => {
-    const userId = userInfo?.id;
+    const userId = '1';
 
     try {
       const url = `http://43.200.181.187:8080/user-favorites/add/${userId}?practiceRoomsId=${practiceRoomsID}`;
