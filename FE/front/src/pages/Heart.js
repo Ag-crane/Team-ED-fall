@@ -9,10 +9,41 @@ function Heart() {
   const [favoriteRooms, setFavoriteRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [resultsPerPage] = useState(8);
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+      const token = localStorage.getItem("authToken");
+
+      if (token) {
+        try {
+          const response = await fetch("http://43.200.181.187:8080/user/me", {
+            method: "GET",  
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch user info");
+          }
+
+          const userData = await response.json();
+          setUserInfo(userData);
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      }
+    }
+
+    fetchUserInfo();
+  }, []);
+
 
   useEffect(() => {
     async function fetchFavoriteRooms() {
-      const userId = "1"; // userId가 1이라고 가정
+      const userId = "1";
+      //const userId = userInfo?.id;
 
       try {
         const response = await fetch(
@@ -54,6 +85,10 @@ function Heart() {
 
   const renderFavoriteCards = () => {
     console.log("favoriteRooms:", favoriteRooms);
+
+    if (favoriteRooms.length === 0) {
+      return <div>찜한 합주실이 없습니다.</div>;
+    }
 
     return currentResults.map((room, index) => (
       <HeartCard

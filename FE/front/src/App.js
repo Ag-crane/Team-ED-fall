@@ -8,6 +8,7 @@ import Login from "./pages/Login.js";
 import Heart from "./pages/Heart.js";
 import Search from "./pages/Search.js";
 import Admin from "./pages/Admin.js";
+import Kakao from  "./pages/Kakao.js";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/heart" element={<Heart />} />
           <Route path="/search" element={<Search />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/kakao" element={<Kakao />} />
           {" "}
         </Routes>
       </div>
