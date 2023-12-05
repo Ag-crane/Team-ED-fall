@@ -9,7 +9,6 @@ import UserInfo from "./Login/UserInfo";
 function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -50,6 +49,20 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
     }
   };
 
+  const handleAdminClick = () => {
+    if (localStorage.getItem("owner") === "true") {
+      const practiceRoomsId = localStorage.getItem("practiceRoomsId");
+      navigate(`/admin/${practiceRoomsId}`);
+      toggleSidebar();
+    }
+    else if (isLoggedIn) {
+      navigate("/admin");
+      toggleSidebar();
+    } else {
+      setShowModal(true);
+    }
+  }
+
   const closeModal = () => {
     setShowModal(false);
   };
@@ -87,6 +100,9 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
         </button>
         <button className="page_btn" onClick={handleEnrollClick}>
           신규 등록하기
+        </button>
+        <button className="page_btn" onClick={handleAdminClick}>
+          정보 수정하기
         </button>
       </div>
       {showModal && (

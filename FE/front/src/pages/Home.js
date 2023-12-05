@@ -24,6 +24,10 @@ function Home() {
   const [groupedCards, setGroupedCards] = useState({});
   const [afterSearch, setAfterSearch] = useState(false);
 
+  // 관리자페이지 로컬 작업 위한 임시 변수
+  localStorage.setItem('practiceRoomsId', 1)
+  localStorage.setItem('owner',true)
+
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
     const isValidTimes = selectedTimes.length > 0;
