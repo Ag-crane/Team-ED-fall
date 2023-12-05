@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import profileImg from "../../assets/profile.png";
 import LoginBtn from "./LoginBtn";
+import LogoutBtn from "./LogoutBtn";
 import "../../styles/components/Sidebar.css";
 
 function UserInfo() {
@@ -46,6 +47,7 @@ function UserInfo() {
       <img className="profile_picture" src={profileImg} alt="프로필" />
       <div className="login_text">
         <p className="nickname">{userInfo.name} 님</p>
+        <LogoutBtn />
       </div>
     </>
   );
