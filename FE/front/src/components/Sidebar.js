@@ -77,16 +77,16 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
       <p className="heart">찜 목록</p>
       <div className="page_layer">
         <button className="page_btn" onClick={handleHomeClick}>
-          합주실 통합검색
+          실시간 통합검색
         </button>
         <button className="page_btn" onClick={handleAboutClick}>
-          전체 합주실 목록
+          전체 목록 보기
         </button>
         <button className="page_btn" onClick={handleRatingClick}>
-          합주실 지도
+          지도에서 찾기
         </button>
         <button className="page_btn" onClick={handleEnrollClick}>
-          합주실 등록
+          신규 등록하기
         </button>
       </div>
       {showModal && (
