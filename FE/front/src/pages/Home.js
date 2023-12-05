@@ -127,11 +127,11 @@ function Home() {
       setCards(data);
       setGroupedCards(groupCards(data));
       
-      if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원,연남,합정"){
-        const crawlerData = await fetchCrawler();
-        setCards(crawlerData);
-        setGroupedCards(groupCards(crawlerData));
-      }
+      // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원,연남,합정"){
+      //   const crawlerData = await fetchCrawler();
+      //   setCards(crawlerData);
+      //   setGroupedCards(groupCards(crawlerData));
+      // }
 
     } catch (error) {
       console.error("Error fetching data:", error.message);
