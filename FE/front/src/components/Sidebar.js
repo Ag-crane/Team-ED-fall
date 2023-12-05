@@ -62,7 +62,6 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
       setShowModal(true);
     }
   }
-
   const closeModal = () => {
     setShowModal(false);
   };
