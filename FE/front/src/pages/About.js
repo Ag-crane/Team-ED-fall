@@ -21,8 +21,40 @@ function About() {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
+    async function fetchUserInfo() {
+      const token = localStorage.getItem("authToken");
+
+      if (token) {
+        try {
+          const response = await fetch("http://43.200.181.187:8080/user/me", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch user info");
+          }
+
+          const userData = await response.json();
+          console.log("User Info:", userData);
+          setUserInfo(userData);
+          
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      }
+    }
+
+    fetchUserInfo();
+  }, []);
+
+  useEffect(() => {
     async function fetchData() {
       try {
+        const userId = userInfo?.id || ''; 
+
         const roomsResponse = await fetch(
           `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=0&size=${itemsPerPage}`
         );
@@ -63,24 +95,25 @@ function About() {
         setTotalPages(Math.ceil(totalElements / itemsPerPage));
         setFilteredTotalPages(Math.ceil(totalElements / itemsPerPage));
 
-        const userId = "1"; //소셜로그인 완성되면 변경해야 함
-        const favoriteRoomsResponse = await fetch(
-          `http://43.200.181.187:8080/user-favorites/${userId}`
-        );
+        if (userId) {
+          const favoriteRoomsResponse = await fetch(
+            `http://43.200.181.187:8080/user-favorites/${userId}`
+          );
 
-        if (!favoriteRoomsResponse.ok) {
-          throw new Error("Failed to fetch favorite rooms");
+          if (!favoriteRoomsResponse.ok) {
+            throw new Error("Failed to fetch favorite rooms");
+          }
+
+          const favoriteRoomsData = await favoriteRoomsResponse.json();
+          setFavoriteRooms(favoriteRoomsData);
         }
-
-        const favoriteRoomsData = await favoriteRoomsResponse.json();
-        setFavoriteRooms(favoriteRoomsData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
 
     fetchData();
-  }, [itemsPerPage]);
+  }, [itemsPerPage, userInfo]);
 
   const renderFilteredCards = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -148,38 +181,10 @@ function About() {
     }
   };
 
-  useEffect(() => {
-    async function fetchUserInfo() {
-      const token = localStorage.getItem("authToken");
-
-      if (token) {
-        try {
-          const response = await fetch("http://43.200.181.187:8080/user/me", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to fetch user info");
-          }
-
-          const userData = await response.json();
-          setUserInfo(userData);
-        } catch (error) {
-          console.error("Error fetching user info:", error);
-        }
-      }
-    }
-
-    fetchUserInfo();
-  }, []);
-
   const toggleFavorite = async (practiceRoomsID) => {
-    const userId = "1";
+    const userId = userInfo?.id || '';
 
-    if (!userInfo) {
+    if (!userId) {
       setShowLoginModal(true);
       console.log("Login is required to toggle favorites.");
       return;
@@ -199,18 +204,20 @@ function About() {
         throw new Error("Failed to toggle favorite status");
       }
 
-      const updatedFavoriteRoomsResponse = await fetch(
-        `http://43.200.181.187:8080/user-favorites/${userId}`
-      );
+      if (userId) {
+        const updatedFavoriteRoomsResponse = await fetch(
+          `http://43.200.181.187:8080/user-favorites/${userId}`
+        );
 
-      if (!updatedFavoriteRoomsResponse.ok) {
-        throw new Error("Failed to fetch updated favorite rooms");
+        if (!updatedFavoriteRoomsResponse.ok) {
+          throw new Error("Failed to fetch updated favorite rooms");
+        }
+
+        const updatedFavoriteRoomsData =
+          await updatedFavoriteRoomsResponse.json();
+        console.log("Favorite Rooms Data:", updatedFavoriteRoomsData);
+        setFavoriteRooms(updatedFavoriteRoomsData);
       }
-
-      const updatedFavoriteRoomsData =
-        await updatedFavoriteRoomsResponse.json();
-      console.log("Favorite Rooms Data:", updatedFavoriteRoomsData);
-      setFavoriteRooms(updatedFavoriteRoomsData);
     } catch (error) {
       console.error("Error toggling favorite status:", error);
     }

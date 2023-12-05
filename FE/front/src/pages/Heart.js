@@ -12,63 +12,52 @@ function Heart() {
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    async function fetchUserInfo() {
+    async function fetchUserInfoAndFavoriteRooms() {
       const token = localStorage.getItem("authToken");
-
+  
       if (token) {
         try {
           const response = await fetch("http://43.200.181.187:8080/user/me", {
-            method: "GET",  
+            method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
-
+  
           if (!response.ok) {
             throw new Error("Failed to fetch user info");
           }
-
+  
           const userData = await response.json();
+          console.log("User Info:", userData);
           setUserInfo(userData);
+  
+          // Now that we have userInfo, fetch favorite rooms
+          const userId = userData?.id || ''; // If userInfo.id is null, use an empty string
+          const favoriteRoomsResponse = await fetch(
+            `http://43.200.181.187:8080/user-favorites/${userId}`
+          );
+  
+          if (!favoriteRoomsResponse.ok) {
+            throw new Error("Failed to fetch favorite rooms");
+          }
+  
+          const favoriteRoomsData = await favoriteRoomsResponse.json();
+          setFavoriteRooms(
+            favoriteRoomsData.map((room) => ({
+              id: String(room.id),
+              name: room.name,
+              fullAddress: room.fullAddress,
+              imageUrl: room.imageUrl,
+            }))
+          );
         } catch (error) {
-          console.error("Error fetching user info:", error);
+          console.error("Error fetching user info or favorite rooms:", error);
         }
       }
     }
-
-    fetchUserInfo();
-  }, []);
-
-
-  useEffect(() => {
-    async function fetchFavoriteRooms() {
-      const userId = "1";
-      //const userId = userInfo?.id;
-
-      try {
-        const response = await fetch(
-          `http://43.200.181.187:8080/user-favorites/${userId}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch favorite rooms");
-        }
-
-        const favoriteRoomsData = await response.json();
-        setFavoriteRooms(
-          favoriteRoomsData.map((room) => ({
-            id: String(room.id),
-            name: room.name,
-            fullAddress: room.fullAddress,
-            imageUrl: room.imageUrl,
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching favorite rooms:", error);
-      }
-    }
-
-    fetchFavoriteRooms();
+  
+    fetchUserInfoAndFavoriteRooms();
   }, []);
 
   const indexOfLastResult = currentPage * resultsPerPage;
