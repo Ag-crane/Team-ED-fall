@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../styles/components/Sidebar.css";
 import profileImg from "../assets/profile.png";
 import { FaRegHeart } from "react-icons/fa";
@@ -9,11 +9,11 @@ import UserInfo from "./Login/UserInfo";
 function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userInfoVisible, setUserInfoVisible] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-
     setIsLoggedIn(!!token);
   }, []);
 
@@ -33,25 +33,31 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
   };
 
   const handleEnrollClick = () => {
-    navigate("/enroll");
-    toggleSidebar();
-  };
-
-  const handleLoginClick = () => {
-    navigate("/login");
-    toggleSidebar();
+    if (isLoggedIn) {
+      navigate("/enroll");
+      toggleSidebar();
+    } else {
+      setShowModal(true);
+    }
   };
 
   const handleHeartClick = () => {
-    navigate("/heart");
-    toggleSidebar();
+    if (isLoggedIn) {
+      navigate("/heart");
+      toggleSidebar();
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
     <div ref={sidebarRef} className={`sidebar ${isOpen ? "open" : ""}`}>
       <div className="login_layer">
-      {isLoggedIn ? (
-          // 로그인 상태일 때 유저 정보 표시
+        {isLoggedIn ? (
           <UserInfo />
         ) : (
           <>
@@ -65,7 +71,7 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
       </div>
       <div className="heart_layer">
         <div className="heart_circle" onClick={handleHeartClick}>
-        <FaRegHeart className="heart_icon" />
+          <FaRegHeart className="heart_icon" />
         </div>
       </div>
       <p className="heart">찜 목록</p>
@@ -83,6 +89,16 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
           합주실 등록
         </button>
       </div>
+      {showModal && (
+        <div className="modal-backdrop" onClick={closeModal}>
+          <div className="modal">
+            <button onClick={closeModal} className="modal-close-button">
+              X
+            </button>
+            <p className="login_alert">로그인이 필요한 기능입니다.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 export function Kakao() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export function Kakao() {
 
   return (
     <div>
-      <h1>로그인 중입니다.</h1>
+      <Spinner />
     </div>
   );
 }
