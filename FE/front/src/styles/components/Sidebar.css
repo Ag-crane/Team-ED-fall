@@ -99,3 +99,8 @@
   font-weight: 10;
   cursor: pointer;
 }
+
+.login_alert{
+  text-align: center;
+  color: black;
+}
