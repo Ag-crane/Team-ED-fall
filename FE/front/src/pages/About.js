@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Filter from "../components/Dropdown/Filter";
 import Pagination from "@mui/material/Pagination";
+import Modal from "../components/Modal";
 import "../styles/pages/About.css";
 
 function About() {
@@ -17,6 +18,7 @@ function About() {
   const [filteredTotalPages, setFilteredTotalPages] = useState(1);
   const [favoriteRooms, setFavoriteRooms] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -24,62 +26,66 @@ function About() {
         const roomsResponse = await fetch(
           `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=0&size=${itemsPerPage}`
         );
-  
+
         if (!roomsResponse.ok) {
           throw new Error("Failed to fetch practice rooms");
         }
-  
+
         const roomsData = await roomsResponse.json();
         const totalElements = roomsData.totalElements;
-  
+
         let allCardData = roomsData.content;
-  
+
         for (let page = 1; page < roomsData.totalPages; page++) {
           const nextPageResponse = await fetch(
             `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=${page}&size=${itemsPerPage}`
           );
-  
+
           if (!nextPageResponse.ok) {
             throw new Error("Failed to fetch data for page " + page);
           }
-  
+
           const nextPageData = await nextPageResponse.json();
           allCardData = [...allCardData, ...nextPageData.content];
         }
-  
+
         const uniqueAddresses = [
-          ...new Set(allCardData.map((card) => (card.commonAddress ? card.commonAddress.trim() : ''))),
+          ...new Set(
+            allCardData.map((card) =>
+              card.commonAddress ? card.commonAddress.trim() : ""
+            )
+          ),
         ].sort((a, b) => a.localeCompare(b));
-  
+
         setUniqueCommonAddresses(uniqueAddresses);
         setCardData(allCardData);
         setFilteredCardData(allCardData);
         setTotalPages(Math.ceil(totalElements / itemsPerPage));
         setFilteredTotalPages(Math.ceil(totalElements / itemsPerPage));
-  
+
         const userId = "1"; //소셜로그인 완성되면 변경해야 함
         const favoriteRoomsResponse = await fetch(
           `http://43.200.181.187:8080/user-favorites/${userId}`
         );
-  
+
         if (!favoriteRoomsResponse.ok) {
           throw new Error("Failed to fetch favorite rooms");
         }
-  
+
         const favoriteRoomsData = await favoriteRoomsResponse.json();
         setFavoriteRooms(favoriteRoomsData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-  
+
     fetchData();
   }, [itemsPerPage]);
 
   const renderFilteredCards = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    
+
     const cardsToRender = selectedFilter
       ? filteredCardData.slice(startIndex, endIndex)
       : cardData.slice(startIndex, endIndex);
@@ -149,7 +155,7 @@ function About() {
       if (token) {
         try {
           const response = await fetch("http://43.200.181.187:8080/user/me", {
-            method: "GET",  
+            method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -171,7 +177,13 @@ function About() {
   }, []);
 
   const toggleFavorite = async (practiceRoomsID) => {
-    const userId = '1';
+    const userId = "1";
+
+    if (!userInfo) {
+      setShowLoginModal(true);
+      console.log("Login is required to toggle favorites.");
+      return;
+    }
 
     try {
       const url = `http://43.200.181.187:8080/user-favorites/add/${userId}?practiceRoomsId=${practiceRoomsID}`;
@@ -186,6 +198,7 @@ function About() {
       if (!response.ok) {
         throw new Error("Failed to toggle favorite status");
       }
+
       const updatedFavoriteRoomsResponse = await fetch(
         `http://43.200.181.187:8080/user-favorites/${userId}`
       );
@@ -246,6 +259,7 @@ function About() {
         />
       </div>
       <div className="card_pack init_height">{renderFilteredCards()}</div>
+
       <div className="pagination">
         <Pagination
           count={selectedFilter ? filteredTotalPages : totalPages}
@@ -253,6 +267,19 @@ function About() {
           onChange={handlePageChange}
         />
       </div>
+      {showLoginModal && (
+        <div className="modal-backdrop">
+          <div className="modal">
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="modal-close-button"
+            >
+              X
+            </button>
+            <p className="login_alert">로그인이 필요한 기능입니다.</p>
+          </div>
+        </div>
+      )}
       <Footer />
     </div>
   );
