@@ -24,6 +24,10 @@ function Home() {
   const [groupedCards, setGroupedCards] = useState({});
   const [afterSearch, setAfterSearch] = useState(false);
 
+  // 관리자페이지 로컬 작업 위한 임시 변수
+  localStorage.setItem('practiceRoomsId', 1)
+  localStorage.setItem('owner',true)
+
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
     const isValidTimes = selectedTimes.length > 0;
@@ -123,11 +127,11 @@ function Home() {
       setCards(data);
       setGroupedCards(groupCards(data));
       
-      if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원,연남,합정"){
-        const crawlerData = await fetchCrawler();
-        setCards(crawlerData);
-        setGroupedCards(groupCards(crawlerData));
-      }
+      // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원,연남,합정"){
+      //   const crawlerData = await fetchCrawler();
+      //   setCards(crawlerData);
+      //   setGroupedCards(groupCards(crawlerData));
+      // }
 
     } catch (error) {
       console.error("Error fetching data:", error.message);

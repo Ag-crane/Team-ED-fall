@@ -23,7 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/heart" element={<Heart />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/:id" element={<Admin />} />
           <Route path="/kakao" element={<Kakao />} />
           {" "}
         </Routes>
