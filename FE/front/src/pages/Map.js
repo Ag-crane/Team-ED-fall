@@ -2,19 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import RatingCard from "../components/Card/RatingCard";
 import VisibleCard from "../components/Card/VisibleCard";
 import Modal from "../components/Modal";
 import markerImg from "../assets/marker.png";
 import Pagination from "@mui/material/Pagination";
-import "../styles/pages/Rating.css";
+import "../styles/pages/Map.css";
 import "../styles/components/Modal.css";
 
-function Rating() {
+function Map() {
   const [cardData, setCardData] = useState([]);
   const [locationData, setLocationData] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -30,7 +27,6 @@ function Rating() {
   } = cardData;
 
   useEffect(() => {
-    fetchHighestRatedPracticeRooms();
     fetchAllPracticeLocations();
     getUserLocation();
 
@@ -43,21 +39,6 @@ function Rating() {
       }
     };
   }, []);
-
-  const fetchHighestRatedPracticeRooms = async () => {
-    try {
-      const response = await fetch(
-        "http://43.200.181.187:8080/practice-rooms/sorted-by-rating?page=0&size=4"
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch highest-rated practice rooms");
-      }
-      const data = await response.json();
-      setCardData(data.content || []);
-    } catch (error) {
-      console.error("Error fetching highest-rated practice rooms:", error);
-    }
-  };
 
   const fetchAllPracticeLocations = async () => {
     try {
@@ -149,7 +130,7 @@ function Rating() {
   useEffect(() => {
     if (mapContainerRef.current) {
       mapContainerRef.current.addEventListener("moveend", handleMapMoveEnd);
-  
+
       return () => {
         if (mapContainerRef.current) {
           mapContainerRef.current.removeEventListener(
@@ -160,19 +141,6 @@ function Rating() {
       };
     }
   }, [mapContainerRef.current, locationData]);
-
-  const renderCards = () => {
-    return cardData.map((card, index) => (
-      <RatingCard
-        key={index}
-        title={card.name}
-        cost={card.cost}
-        locate={card.fullAddress}
-        content={<img src={card.imageUrl} alt="사진이 없습니다." />}
-        rating={card.visitorReviewScore}
-      />
-    ));
-  };
 
   const renderVisibleCards = () => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -215,20 +183,11 @@ function Rating() {
           {renderMapMarkers()}
         </MapContainer>
       )}
-
-      <div>
-      <div className="title_wrap">
-        <div className="rating_title">
-          평점 높은 합주실을 찾아보세요
-        </div>
-        </div>
-        <div className="rating_card_pack">{renderCards()}</div>
-      </div>
       <div>
         <div className="title_wrap">
-        <div className="rating_title">
-          주변 합주실을 찾아보세요
-        </div>
+          <div className="rating_title">
+            주변 합주실을 찾아보세요
+          </div>
         </div>
         <div className="visible_card_pack">{renderVisibleCards()}</div>
         <div className="pagination">
@@ -283,4 +242,4 @@ function Rating() {
   );
 }
 
-export default Rating;
+export default Map;
