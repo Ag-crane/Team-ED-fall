@@ -13,12 +13,12 @@ function About() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const [filteredCardData, setFilteredCardData] = useState([]);
-  const [uniqueCommonAddresses, setUniqueCommonAddresses] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [filteredTotalPages, setFilteredTotalPages] = useState(1);
   const [favoriteRooms, setFavoriteRooms] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const regions = ["강남구","강동구","강서구","광진구","금천구","노원구","동작구","마포구","서대문구","서초구","성동구","송파구","영등포구","용산구","은평구","종로구","중구"]
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -81,15 +81,6 @@ function About() {
           allCardData = [...allCardData, ...nextPageData.content];
         }
 
-        const uniqueAddresses = [
-          ...new Set(
-            allCardData.map((card) =>
-              card.commonAddress ? card.commonAddress.trim() : ""
-            )
-          ),
-        ].sort((a, b) => a.localeCompare(b));
-
-        setUniqueCommonAddresses(uniqueAddresses);
         setCardData(allCardData);
         setFilteredCardData(allCardData);
         setTotalPages(Math.ceil(totalElements / itemsPerPage));
@@ -164,8 +155,8 @@ function About() {
 
         const filteredPageData = responseData.content.filter(
           (card) =>
-            !selectedValue || card.commonAddress.trim() === selectedValue.trim()
-        );
+            !selectedValue || card.commonAddress.trim().includes(selectedValue.trim())
+        );        
 
         filteredCardData = [...filteredCardData, ...filteredPageData];
       }
@@ -261,7 +252,7 @@ function About() {
       <Header />
       <div className="filter-container">
         <Filter
-          allUniqueAddresses={uniqueCommonAddresses}
+          regions={regions}
           onChange={handleFilterChange}
         />
       </div>
