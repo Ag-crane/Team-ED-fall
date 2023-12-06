@@ -18,6 +18,7 @@ function About() {
   const [favoriteRooms, setFavoriteRooms] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [sortByRating, setSortByRating] = useState(false);
   const regions = ["강남구","강동구","강서구","광진구","금천구","노원구","동작구","마포구","서대문구","서초구","성동구","송파구","영등포구","용산구","은평구","종로구","중구"]
 
   useEffect(() => {
@@ -40,7 +41,7 @@ function About() {
           const userData = await response.json();
           console.log("User Info:", userData);
           setUserInfo(userData);
-          
+
         } catch (error) {
           console.error("Error fetching user info:", error);
         }
@@ -53,10 +54,14 @@ function About() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const userId = userInfo?.id || ''; 
+        const userId = userInfo?.id || "";
+
+        const sortEndpoint = sortByRating
+          ? "sorted-by-rating"
+          : "sorted-by-name";
 
         const roomsResponse = await fetch(
-          `http://43.200.181.187:8080/practice-rooms/sorted-by-name?page=0&size=${itemsPerPage}`
+          `http://43.200.181.187:8080/practice-rooms/${sortEndpoint}?page=0&size=${itemsPerPage}`
         );
 
         if (!roomsResponse.ok) {
@@ -81,6 +86,16 @@ function About() {
           allCardData = [...allCardData, ...nextPageData.content];
         }
 
+        const uniqueAddresses = [
+          ...new Set(
+            allCardData.map((card) =>
+              card.commonAddress ? card.commonAddress.trim() : ""
+            )
+          ),
+        ].sort((a, b) => a.localeCompare(b));
+
+        setUniqueCommonAddresses(uniqueAddresses);
+
         setCardData(allCardData);
         setFilteredCardData(allCardData);
         setTotalPages(Math.ceil(totalElements / itemsPerPage));
@@ -104,7 +119,7 @@ function About() {
     }
 
     fetchData();
-  }, [itemsPerPage, userInfo]);
+  }, [itemsPerPage, userInfo, sortByRating]);
 
   const renderFilteredCards = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -173,7 +188,7 @@ function About() {
   };
 
   const toggleFavorite = async (practiceRoomsID) => {
-    const userId = userInfo?.id || '';
+    const userId = userInfo?.id || "";
 
     if (!userId) {
       setShowLoginModal(true);
@@ -247,6 +262,10 @@ function About() {
     }
   };
 
+  const handleSortToggle = () => {
+    setSortByRating((prev) => !prev);
+  };
+
   return (
     <div>
       <Header />
@@ -255,6 +274,15 @@ function About() {
           regions={regions}
           onChange={handleFilterChange}
         />
+        <div className="sort-toggle">
+          <input
+            id="flex-3"
+            type="checkbox"
+            checked={sortByRating}
+            onChange={handleSortToggle}
+          />
+          <label for="flex-3">평점순 정렬</label>
+        </div>
       </div>
       <div className="card_pack init_height">{renderFilteredCards()}</div>
 

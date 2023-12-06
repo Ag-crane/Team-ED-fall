@@ -9,6 +9,7 @@ import UserInfo from "./Login/UserInfo";
 function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -62,6 +63,7 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
       setShowModal(true);
     }
   }
+
   const closeModal = () => {
     setShowModal(false);
   };
