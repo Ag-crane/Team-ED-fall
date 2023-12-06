@@ -34,7 +34,8 @@ export default DateSelector;
 
 const CalendarContainer = styled.div`
   .react-datepicker {
-    width: 300px;
+    width: 360px;
+    padding: 10px 0px;
   }
   .react-datepicker__month-container {
     float: none;
@@ -63,12 +64,24 @@ const CalendarContainer = styled.div`
     margin-bottom: -12px;
     font-size: smaller;
   }
+  .react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+    margin: 0.166rem 0.6rem;
+    font-size: 16px;
+  }
   .react-datepicker__current-month,
   .react-datepicker-time__header,
   .react-datepicker-year-header {
     margin-top: 0;
     color: rgba(39, 57, 82);
     font-weight: 18;
-    font-size: 16px;
+    font-size: 20px;
+  }
+  .react-datepicker__navigation--next {
+    right: 30px;
+    top: 21px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 30px;
+    top: 21px;
   }
 `;
