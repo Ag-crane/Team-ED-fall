@@ -86,16 +86,6 @@ function About() {
           allCardData = [...allCardData, ...nextPageData.content];
         }
 
-        const uniqueAddresses = [
-          ...new Set(
-            allCardData.map((card) =>
-              card.commonAddress ? card.commonAddress.trim() : ""
-            )
-          ),
-        ].sort((a, b) => a.localeCompare(b));
-
-        setUniqueCommonAddresses(uniqueAddresses);
-
         setCardData(allCardData);
         setFilteredCardData(allCardData);
         setTotalPages(Math.ceil(totalElements / itemsPerPage));
@@ -281,7 +271,7 @@ function About() {
             checked={sortByRating}
             onChange={handleSortToggle}
           />
-          <label for="flex-3">평점순 정렬</label>
+          <label htmlFor="flex-3">평점순 정렬</label>
         </div>
       </div>
       <div className="card_pack init_height">{renderFilteredCards()}</div>
