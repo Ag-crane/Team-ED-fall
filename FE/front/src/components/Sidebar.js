@@ -27,8 +27,8 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
     toggleSidebar();
   };
 
-  const handleRatingClick = () => {
-    navigate("/rating");
+  const handleMapClick = () => {
+    navigate("/map");
     toggleSidebar();
   };
 
@@ -96,7 +96,7 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
         <button className="page_btn" onClick={handleAboutClick}>
           전체 목록 보기
         </button>
-        <button className="page_btn" onClick={handleRatingClick}>
+        <button className="page_btn" onClick={handleMapClick}>
           지도에서 찾기
         </button>
         <button className="page_btn" onClick={handleEnrollClick}>
