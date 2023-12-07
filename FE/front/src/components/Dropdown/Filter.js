@@ -18,7 +18,7 @@ function Filter({ regions, onChange }) {
         value={selectedOption}
         onChange={handleOptionChange}
       >
-        <option value="">-</option>
+        <option value="">지역 선택</option>
         {regions.map((option, index) => (
           <option key={index} value={option}>
             {option}
