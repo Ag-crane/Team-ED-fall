@@ -10,13 +10,6 @@
   border-spacing: 0;
 }
 
-.business-details th,
-.business-details td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
 .business-details tr:first-child td:first-child {
   border-top-left-radius: 10px;
 }
@@ -37,24 +30,11 @@
 .business-details td {
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: left;
-}
-
-.business-details th {
-  background-color: #f2f2f2;
+  text-align: center;
 }
 
 .business-details tr:nth-child(even) {
   background-color: #f9f9f9;
-}
-
-.business-details tr:hover {
-  background-color: #ddd;
-}
-
-.business-details td {
-  vertical-align: middle;
-  text-align: center;
 }
 
 .business-details td:first-child {
@@ -87,4 +67,20 @@
 
 .business-details button:hover {
   background-color: rgba(76, 105, 131, 0.8);
+}
+
+.roomInfo td:first-child {
+  width: 200px;
+}
+
+.roomInfo td:nth-child(2) {
+  width: 600px;
+}
+
+.roomInfo td:nth-child(3) {
+  width: 100px;
+}
+
+.roomInfo td:last-child {
+  width: 100px;
 }
