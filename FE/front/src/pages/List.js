@@ -202,7 +202,6 @@ function List() {
 
     if (!userId) {
       setShowLoginModal(true);
-      console.log("Login is required to toggle favorites.");
       return;
     }
 
@@ -277,6 +276,10 @@ function List() {
     setCurrentPage(1);
   };
 
+  const closeModal = () => {
+    setShowLoginModal(false);
+  };
+
   return (
     <div>
       <Header />
@@ -304,12 +307,9 @@ function List() {
         />
       </div>
       {showLoginModal && (
-        <div className="modal-backdrop">
+        <div className="modal-backdrop" onClick={closeModal}>
           <div className="modal">
-            <button
-              onClick={() => setShowLoginModal(false)}
-              className="modal-close-button"
-            >
+            <button onClick={closeModal} className="modal-close-button">
               X
             </button>
             <p className="login_alert">로그인이 필요한 기능입니다.</p>
