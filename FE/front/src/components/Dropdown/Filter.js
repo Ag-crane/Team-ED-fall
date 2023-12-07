@@ -18,8 +18,10 @@ function Filter({ options, optionLabel, onChange }) {
         value={selectedOption}
         onChange={handleOptionChange}
       >
+
         <option value="">{optionLabel}</option>
         {options.map((option, index) => (
+
           <option key={index} value={option}>
             {option}
           </option>
