@@ -22,8 +22,8 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
     toggleSidebar();
   };
 
-  const handleAboutClick = () => {
-    navigate("/about");
+  const handleListClick = () => {
+    navigate("/list");
     toggleSidebar();
   };
 
@@ -93,7 +93,7 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
         <button className="page_btn" onClick={handleHomeClick}>
           실시간 통합검색
         </button>
-        <button className="page_btn" onClick={handleAboutClick}>
+        <button className="page_btn" onClick={handleListClick}>
           전체 목록 보기
         </button>
         <button className="page_btn" onClick={handleMapClick}>
