@@ -25,7 +25,7 @@ function Home() {
   const [afterSearch, setAfterSearch] = useState(false);
 
   // 관리자페이지 로컬 작업 위한 임시 변수
-  localStorage.setItem('practiceRoomsId', 1)
+  localStorage.setItem('practiceRoomsId', 123456)
   localStorage.setItem('owner',true)
 
   useEffect(() => {
