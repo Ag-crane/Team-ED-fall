@@ -4,10 +4,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Filter from "../components/Dropdown/Filter";
 import Pagination from "@mui/material/Pagination";
-import Modal from "../components/Modal";
-import "../styles/pages/About.css";
+import "../styles/pages/List.css";
 
-function About() {
+function List() {
   const [cardData, setCardData] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -143,7 +142,6 @@ function About() {
       }
 
       const totalData = await totalResponse.json();
-      const totalElements = totalData.totalElements;
 
       let filteredCardData = [];
 
@@ -301,4 +299,4 @@ function About() {
   );
 }
 
-export default About;
+export default List;

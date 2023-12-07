@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home.js";
-import About from "./pages/About.js";
+import List from "./pages/List.js";
 import Enroll from "./pages/Enroll.js";
 import Map from "./pages/Map.js";
 import Login from "./pages/Login.js";
@@ -17,7 +17,7 @@ function App() {
         <Routes>
           {" "}
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/list" element={<List />} />
           <Route path="/map" element={<Map />} />
           <Route path="/enroll" element={<Enroll />} />
           <Route path="/login" element={<Login />} />
