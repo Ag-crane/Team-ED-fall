@@ -18,7 +18,27 @@ function List() {
   const [userInfo, setUserInfo] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [sortByRating, setSortByRating] = useState(false);
-  const regions = ["강남구","강동구","강서구","광진구","금천구","노원구","동작구","마포구","서대문구","서초구","성동구","송파구","영등포구","용산구","은평구","종로구","중구"]
+
+  const regions = [
+    "강남구",
+    "강동구",
+    "강서구",
+    "광진구",
+    "금천구",
+    "노원구",
+    "동작구",
+    "마포구",
+    "서대문구",
+    "서초구",
+    "성동구",
+    "송파구",
+    "영등포구",
+    "용산구",
+    "은평구",
+    "종로구",
+    "중구",
+  ];
+  const sort = ["이름순", "평점순"];
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -108,7 +128,8 @@ function List() {
     }
 
     fetchData();
-  }, [itemsPerPage, userInfo, sortByRating]);
+
+  }, [itemsPerPage, userInfo, sortByRating, selectedFilter]);
 
   const renderFilteredCards = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -158,8 +179,9 @@ function List() {
 
         const filteredPageData = responseData.content.filter(
           (card) =>
-            !selectedValue || card.commonAddress.trim().includes(selectedValue.trim())
-        );        
+            !selectedValue ||
+            card.commonAddress.trim().includes(selectedValue.trim())
+        );
 
         filteredCardData = [...filteredCardData, ...filteredPageData];
       }
@@ -250,8 +272,9 @@ function List() {
     }
   };
 
-  const handleSortToggle = () => {
-    setSortByRating((prev) => !prev);
+  const handleSortChange = async (selectedValue) => {
+    setSortByRating(selectedValue === "평점순");
+    setCurrentPage(1);
   };
 
   return (
@@ -259,17 +282,16 @@ function List() {
       <Header />
       <div className="filter-container">
         <Filter
-          regions={regions}
+          optionLabel="지역 선택"
+          options={regions}
           onChange={handleFilterChange}
         />
-        <div className="sort-toggle">
-          <input
-            id="flex-3"
-            type="checkbox"
-            checked={sortByRating}
-            onChange={handleSortToggle}
+        <div className="sort_filter">
+          <Filter
+            optionLabel="정렬 선택"
+            options={sort}
+            onChange={handleSortChange}
           />
-          <label htmlFor="flex-3">평점순 정렬</label>
         </div>
       </div>
       <div className="card_pack init_height">{renderFilteredCards()}</div>

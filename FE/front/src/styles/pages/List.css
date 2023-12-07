@@ -19,6 +19,9 @@
   display: flex;
 }
 
+.sort_filter{
+  margin-left: -40px;
+
 .sort-toggle{
   display: flex;
   align-items: flex-end;
