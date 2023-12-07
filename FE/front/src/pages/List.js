@@ -18,6 +18,7 @@ function List() {
   const [userInfo, setUserInfo] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [sortByRating, setSortByRating] = useState(false);
+
   const regions = [
     "강남구",
     "강동구",
@@ -59,6 +60,7 @@ function List() {
           const userData = await response.json();
           console.log("User Info:", userData);
           setUserInfo(userData);
+
         } catch (error) {
           console.error("Error fetching user info:", error);
         }
@@ -126,6 +128,7 @@ function List() {
     }
 
     fetchData();
+
   }, [itemsPerPage, userInfo, sortByRating, selectedFilter]);
 
   const renderFilteredCards = () => {
