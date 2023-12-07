@@ -21,10 +21,6 @@ function Map() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
   const mapContainerRef = useRef(null);
-  const {
-    name,
-    hasBooking,
-  } = cardData;
 
   useEffect(() => {
     fetchAllPracticeLocations();
@@ -165,9 +161,7 @@ function Map() {
   // 배포시 HTTP에서는 사용할 수 없음
   const mapCenter = [37.5599, 127.0027];
 
-  useEffect(() => {
-
-  }, [mapCenter]);
+  useEffect(() => {}, [mapCenter]);
 
   return (
     <div>
@@ -185,9 +179,7 @@ function Map() {
       )}
       <div>
         <div className="title_wrap">
-          <div className="rating_title">
-            주변 합주실을 찾아보세요
-          </div>
+          <div className="rating_title">주변 합주실을 찾아보세요</div>
         </div>
         <div className="visible_card_pack">{renderVisibleCards()}</div>
         <div className="pagination">
@@ -201,38 +193,49 @@ function Map() {
 
       <Modal isOpen={!!selectedLocation} onClose={handleModalClose}>
         {selectedLocation && (
-          <div className="modal-content">
-            <h2 className="modal-title">{selectedLocation.name}</h2>
-            <div className="modal-img-box">
-              <img
-                className="modal-image"
-                src={selectedLocation.imageUrl}
-                alt={name}
-              />
+          <div class="popup">
+            <div class="popup-head">
+              <span class="head-title">Team ED</span>
             </div>
-
-            <div className="modal-details">
-              <p>
-                <strong>주소:</strong> {selectedLocation.fullAddress}
-              </p>
-              <p>
-                <strong>연락처:</strong>{" "}
-                {selectedLocation.phone || selectedLocation.virtualPhone}
-              </p>
-              <p>
-                <strong>방문자 평점:</strong>{" "}
-                {selectedLocation.visitorReviewScore
-                  ? selectedLocation.visitorReviewScore
-                  : "-"}
-              </p>
-              <button
-                onClick={() =>
-                  window.open(selectedLocation.bookingUrl, "_blank")
-                }
-                disabled={hasBooking !== "True"}
-              >
-                예약 페이지로 이동
-              </button>
+            <div class="popup-body">
+              <div class="body-content">
+                <div class="body-titlebox">
+                  <h1>{selectedLocation.name}</h1>
+                </div>
+                <div class="body-contentbox">
+                  <div className="modal-img-box">
+                    <img
+                      className="modal-image"
+                      src={selectedLocation.imageUrl}
+                      alt={selectedLocation.name}
+                    />
+                  </div>
+                  <div className="modal-details">
+                    <p>
+                      <strong>주소:</strong> {selectedLocation.fullAddress}
+                    </p>
+                    <p>
+                      <strong>연락처:</strong>{" "}
+                      {selectedLocation.phone || selectedLocation.virtualPhone}
+                    </p>
+                    <p>
+                      <strong>방문자 평점:</strong>{" "}
+                      {selectedLocation.visitorReviewScore
+                        ? selectedLocation.visitorReviewScore
+                        : "-"}
+                    </p>
+                  </div>
+                  <button
+                    className="popup-Re-btn"
+                    onClick={() =>
+                      window.open(selectedLocation.bookingUrl, "_blank")
+                    }
+                    disabled={!selectedLocation.bookingUrl}
+                  >
+                    예약 페이지로 이동
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}

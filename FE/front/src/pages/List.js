@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import Filter from "../components/Dropdown/Filter";
 import Pagination from "@mui/material/Pagination";
 import "../styles/pages/List.css";
+import "../styles/components/Modal.css";
 
 function List() {
   const [cardData, setCardData] = useState([]);
@@ -307,14 +308,25 @@ function List() {
         />
       </div>
       {showLoginModal && (
-        <div className="modal-backdrop" onClick={closeModal}>
-          <div className="modal">
-            <button onClick={closeModal} className="modal-close-button">
-              X
-            </button>
-            <p className="login_alert">로그인이 필요한 기능입니다.</p>
+        <div class="modal-container" onClick={closeModal}>
+        <div class="modal-backdrop" id="popup">
+          <div class="popup">
+            <div class="popup-head">
+                <span class="head-title">Team ED</span>
+            </div>
+            <div class="popup-body">
+              <div class="body-content">
+                <div class="body-titlebox">
+                  <div className="popup-text">로그인이 필요한 기능입니다.</div>
+                </div>
+              </div>
+            </div>
+            <div class="popup-foot">
+              <span class="pop-btn confirm" id="confirm">확인</span>
+            </div>
           </div>
-        </div>
+      </div>
+      </div>
       )}
       <Footer />
     </div>

@@ -55,26 +55,40 @@ const ListCard = ({ cardData, onToggleFavorite, favoriteRooms }) => {
         </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={toggleModal}>
-        <div className="modal-content">
-          <h2 className="modal-title">{name}</h2>
-          <img className="modal-image" src={imageUrl} alt={name} />
-          <div className="modal-details">
-            <p>
-              <strong>주소:</strong> {fullAddress}
-            </p>
-            <p>
-              <strong>연락처:</strong> {phone || virtualPhone}
-            </p>
-            <p>
-              <strong>방문자 평점:</strong>{" "}
-              {visitorReviewScore ? visitorReviewScore : "-"}
-            </p>
-            <button
-              onClick={() => window.open(bookingUrl, "_blank")}
-              disabled={hasBooking !== "True"}
-            >
-              예약 페이지로 이동
-            </button>
+        <div class="popup">
+          <div class="popup-head">
+            <span class="head-title">Team ED</span>
+          </div>
+          <div class="popup-body">
+            <div class="body-content">
+              <div class="body-titlebox">
+                <h1>{name}</h1>
+              </div>
+              <div class="body-contentbox">
+                <div className="modal-img-box">
+                  <img className="modal-image" src={imageUrl} alt={name} />
+                </div>
+                <div className="modal-details">
+                  <p>
+                    <strong>주소:</strong> {fullAddress}
+                  </p>
+                  <p>
+                    <strong>연락처:</strong> {phone || virtualPhone}
+                  </p>
+                  <p>
+                    <strong>방문자 평점:</strong>{" "}
+                    {visitorReviewScore ? visitorReviewScore : "-"}
+                  </p>
+                </div>
+                <button
+                    className="popup-Re-btn"
+                    onClick={() => window.open(bookingUrl, "_blank")}
+                    disabled={hasBooking !== "True"}
+                  >
+                    예약 페이지로 이동
+                  </button>
+              </div>
+            </div>
           </div>
         </div>
       </Modal>

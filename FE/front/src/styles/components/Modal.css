@@ -1,73 +1,189 @@
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal {
-    background: white;
-    width: 50%; /* 모달의 폭을 조정 */
-    max-width: 600px; /* 최대 폭 설정 */
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    position: relative; /* 모달 내 위치 조정을 위해 relative 설정 */
-  }
-  
-  .modal-close-button {
-    position: absolute; /* 닫기 버튼을 모달 우측 상단에 고정 */
-    top: 10px;
-    right: 10px;
-    border: none;
-    background: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  width: 50%;
+  /* 모달의 폭을 조정 */
+  max-width: 600px;
+  /* 최대 폭 설정 */
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  /* 모달 내 위치 조정을 위해 relative 설정 */
+}
+
+.modal-close-button {
+  position: absolute;
+  /* 닫기 버튼을 모달 우측 상단에 고정 */
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .modal-content {
   max-height: 80vh;
   overflow-y: auto;
 }
 
-.modal-img-box{
+.modal-img-box {
   display: flex;
   justify-content: center;
-  width: 520px;
-  border: 1px black outset; 
-  
+  width: 510px;
+  min-height: 300px;
 }
 
 .modal-image {
-  max-width: 100%;
+  width: 90%;
   height: auto;
   margin: 20px;
 }
 
-.modal-content button {
+.popup-Re-btn {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: rgba(56, 85, 106);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 20px;
+  margin: 30px 0px;
 }
 
-.modal-content button:hover {
-  background-color: #0056b3;
+.popup-Re-btn:hover {
+  background-color: rgba(56, 85, 106);
 }
 
-.modal-content button:disabled {
+.popup-Re-btn:disabled {
   background-color: #cccccc;
   color: #666666;
   cursor: default;
   opacity: 0.7;
+}
+
+.modal-title {
+  margin-left: 25px;
+  font-size: 30px;
+}
+
+.popup-wrap {
+  background-color: rgba(0, 0, 0, .3);
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  padding: 15px;
+}
+
+.popup {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: rgba(56, 85, 106);
+  box-shadow: 5px 10px 10px 1px rgba(0, 0, 0, .3);
+}
+
+.popup-head {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.head-title {
+  color: #ffffff;
+}
+
+.popup-body {
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.body-content {
+  min-height: 200px;
+  padding: 10px 30px;
+}
+
+.body-titlebox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.body-contentbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  word-break: break-word;
+  overflow-y: auto;
+  min-height: 100px;
+  max-height: 80vh;
+}
+
+.popup-foot {
+  width: 100%;
+  height: 50px;
+}
+
+.pop-btn {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.pop-btn.confirm {
+  border-right: 1px solid rgba(39, 57, 82);
+}
+
+.list-pop-btn {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  color: #000000;
+  cursor: pointer;
+}
+
+.modal-details {
+  width: 92%;
+  margin-left: 25px;
+}
+
+.popup-text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 25px;
+  color: black;
 }
