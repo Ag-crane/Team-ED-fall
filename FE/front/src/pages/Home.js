@@ -23,6 +23,7 @@ function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
   const [afterSearch, setAfterSearch] = useState(false);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   // 관리자페이지 로컬 작업 위한 임시 변수
   localStorage.setItem('practiceRoomsId', 123456)
@@ -143,7 +144,8 @@ function Home() {
   const handleSearch = () => {
     if (isButtonActive) {
       fetchData();
-      setAfterSearch(true);
+      setAfterSearch(!afterSearch);
+      setSearchPerformed(true);
     }
   };
 
@@ -194,7 +196,7 @@ function Home() {
             검색하기
           </button>
         </div>
-        <div className={afterSearch ? "" : "hidden"}>
+        <div className={afterSearch && searchPerformed ? "" : "hidden"}>
           {isLoading ? (
             <div>
               <Spinner />
