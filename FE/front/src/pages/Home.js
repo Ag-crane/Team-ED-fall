@@ -20,14 +20,15 @@ function Home() {
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [cards, setCards] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [groupedCards, setGroupedCards] = useState({});
   const [afterSearch, setAfterSearch] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const cardsPerPage = 2;
 
   // 관리자페이지 로컬 작업 위한 임시 변수
-  localStorage.setItem('practiceRoomsId', 123456)
-  localStorage.setItem('owner',true)
+  localStorage.setItem("practiceRoomsId", 123456);
+  localStorage.setItem("owner", true);
 
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
@@ -111,10 +112,9 @@ function Home() {
   }
 
   async function fetchData() {
-    console.log(selectedRegion)
+    console.log(selectedRegion);
     setIsLoading(true);
     try {
-
       // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원, 연남, 합정"){
       //   const crawlerData = await fetchDB();
       //   setCards(crawlerData);
@@ -127,13 +127,12 @@ function Home() {
       const data = await fetchDB();
       setCards(data);
       setGroupedCards(groupCards(data));
-      
+
       // if (selectedRegion === "마포구 동교동" || selectedRegion === "마포구 서교동" || selectedRegion === "망원,연남,합정"){
       //   const crawlerData = await fetchCrawler();
       //   setCards(crawlerData);
       //   setGroupedCards(groupCards(crawlerData));
       // }
-
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
@@ -146,27 +145,28 @@ function Home() {
       fetchData();
       setAfterSearch(!afterSearch);
       setSearchPerformed(true);
+      setCurrentPage(0);
     }
   };
-
-  const nextCard = () => {
-    const nextIndex = (currentIndex + 2) % cards.length;
-    setCurrentIndex(nextIndex);
-  };
-
-  const prevCard = () => {
-    const prevIndex = (currentIndex - 2 + cards.length) % cards.length;
-    setCurrentIndex(prevIndex);
-  };
-
-  const currentCard1 = cards[currentIndex];
-  const currentCard2 = cards[(currentIndex + 1) % cards.length];
 
   const availablePracticeRooms = Object.keys(groupedCards);
   const hasMultipleRooms = availablePracticeRooms.length > 1;
 
   const handleRegionChange = (region) => {
     setSelectedRegion(region);
+  };
+
+  const nextCardPage = () => {
+    const totalPages = Math.ceil(cards.length / cardsPerPage);
+    if (currentPage < totalPages - 1) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const prevCardPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
   };
 
   return (
@@ -207,31 +207,35 @@ function Home() {
                 {cards.length > 0 ? (
                   <>
                     <div className="nav_buttons">
-                      <button onClick={prevCard}>
+                      <button onClick={prevCardPage}>
                         <FontAwesomeIcon icon={faArrowLeft} />
                       </button>
                     </div>
                     <div className="maincard_group">
                       {hasMultipleRooms ? (
                         <>
-                          <MainCard
-                            card={currentCard1}
-                            groupedCards={groupedCards}
-                          />
-                          <MainCard
-                            card={currentCard2}
-                            groupedCards={groupedCards}
-                          />
+                          {cards
+                            .slice(
+                              currentPage * cardsPerPage,
+                              (currentPage + 1) * cardsPerPage
+                            )
+                            .map((card, index) => (
+                              <MainCard
+                                key={index}
+                                card={card}
+                                groupedCards={groupedCards}
+                              />
+                            ))}
                         </>
                       ) : (
                         <MainCard
-                          card={currentCard1}
+                          card={cards[currentPage]}
                           groupedCards={groupedCards}
                         />
                       )}
                     </div>
                     <div className="nav_buttons">
-                      <button onClick={nextCard}>
+                      <button onClick={nextCardPage}>
                         <FontAwesomeIcon icon={faArrowRight} />
                       </button>
                     </div>
