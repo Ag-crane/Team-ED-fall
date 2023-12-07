@@ -19,47 +19,6 @@
   display: flex;
 }
 
-.sort-toggle{
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 13px;
-  margin-left: 30px;
-}
-
-#flex-3 {
-  display: none;
-}
-
-#flex-3 + label {
-  display: inline-block;
-  width: 150px;
-  height: 24px;
-  background: rgba(56, 85, 106, 0.1);
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  position: relative;
-  text-align: center;
-  cursor: pointer;
-}
-
-#flex-3:checked + label {
-  background: rgba(56, 85, 106, 0.3);
-  border: 1px solid #ccc;
-}
-
-#flex-3 + label:after {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: rgba(56, 85, 106);
-  top: 50%;
-  transform: translateY(-50%);
-  transition: 0.3s;
-  left: 7px;
-}
-
-#flex-3:checked + label:after {
-  left: calc(100% - 20px);
+.sort_filter{
+  margin-left: -40px;
 }

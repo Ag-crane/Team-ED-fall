@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../styles/components/Dropdown/Filter.css";
 
-function Filter({ regions, onChange }) {
+function Filter({ options, optionLabel, onChange }) {
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (event) => {
@@ -18,8 +18,8 @@ function Filter({ regions, onChange }) {
         value={selectedOption}
         onChange={handleOptionChange}
       >
-        <option value="">지역 선택</option>
-        {regions.map((option, index) => (
+        <option value="">{optionLabel}</option>
+        {options.map((option, index) => (
           <option key={index} value={option}>
             {option}
           </option>
