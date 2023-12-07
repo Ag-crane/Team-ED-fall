@@ -4,10 +4,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Filter from "../components/Dropdown/Filter";
 import Pagination from "@mui/material/Pagination";
-import Modal from "../components/Modal";
-import "../styles/pages/About.css";
+import "../styles/pages/List.css";
 
-function About() {
+function List() {
   const [cardData, setCardData] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -86,16 +85,6 @@ function About() {
           allCardData = [...allCardData, ...nextPageData.content];
         }
 
-        const uniqueAddresses = [
-          ...new Set(
-            allCardData.map((card) =>
-              card.commonAddress ? card.commonAddress.trim() : ""
-            )
-          ),
-        ].sort((a, b) => a.localeCompare(b));
-
-        setUniqueCommonAddresses(uniqueAddresses);
-
         setCardData(allCardData);
         setFilteredCardData(allCardData);
         setTotalPages(Math.ceil(totalElements / itemsPerPage));
@@ -153,7 +142,6 @@ function About() {
       }
 
       const totalData = await totalResponse.json();
-      const totalElements = totalData.totalElements;
 
       let filteredCardData = [];
 
@@ -281,7 +269,7 @@ function About() {
             checked={sortByRating}
             onChange={handleSortToggle}
           />
-          <label for="flex-3">평점순 정렬</label>
+          <label htmlFor="flex-3">평점순 정렬</label>
         </div>
       </div>
       <div className="card_pack init_height">{renderFilteredCards()}</div>
@@ -311,4 +299,4 @@ function About() {
   );
 }
 
-export default About;
+export default List;
