@@ -24,7 +24,8 @@ function LogoutBtn() {
     <div className="to_login">
       {userInfo ? (
         <div  className="kakao_btn_box" onClick={handleLogout}>
-          <img src={KAKAO} alt="로그인" className="kakao_login" />
+          {/* <img src={KAKAO} alt="로그인" className="kakao_login" /> */}
+          <div className="kakao_login">로그아웃</div>
         </div>
       ) : (
         <span>User not logged in</span>
