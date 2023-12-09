@@ -24,8 +24,8 @@ class LoginBtn extends Component {
       <>
         <div className="to_login">
           <div className="kakao_btn_box">
-          {/* <Link to="http://43.200.181.187:8080/oauth2/authorization/kakao"> */}
-          <Link to="http://localhost:8080/oauth2/authorization/kakao" className="kakao_link">
+          <Link to="http://43.200.181.187:8080/oauth2/authorization/kakao">
+          {/* <Link to="http://localhost:8080/oauth2/authorization/kakao" className="kakao_link"> */}
             {/* <img src={KAKAO} alt="로그인" className="kakao_login" /> */}
             <div className="kakao_login">로그인</div>
           </Link>
