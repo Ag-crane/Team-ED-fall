@@ -24,6 +24,8 @@ function UserInfo() {
       .then((data) => {
         // 사용자 정보 업데이트
         setUserInfo(data);
+        localStorage.setItem("practiceRoomsId", data.practiceRoomsId)
+        localStorage.setItem("owner",data.owner)
       })
       .catch((error) => {
         console.error("Error fetching user info:", error);
