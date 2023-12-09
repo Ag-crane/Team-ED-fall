@@ -26,10 +26,6 @@ function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const cardsPerPage = 2;
 
-  // 관리자페이지 로컬 작업 위한 임시 변수
-  localStorage.setItem("practiceRoomsId", 123456);
-  localStorage.setItem("owner", true);
-
   useEffect(() => {
     const isValidDate = selectedDate instanceof Date;
     const isValidTimes = selectedTimes.length > 0;
