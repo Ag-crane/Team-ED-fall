@@ -39,7 +39,7 @@ function Admin() {
       <Header />
       <div className="admin-content">
         <p><strong>&lt;{data.practiceRoomName}&gt;</strong> 관리자님 안녕하세요</p>
-        <BusinessDetails data={data} />
+        <BusinessDetails data={data} id={id} />
       </div>
       <Footer />
     </div>
