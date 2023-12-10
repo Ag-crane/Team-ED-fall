@@ -17,6 +17,8 @@ function LogoutBtn() {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("practiceRoomsId");
+    localStorage.removeItem("owner");
     window.location.href = "/";
   };
 
