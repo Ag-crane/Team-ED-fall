@@ -100,9 +100,9 @@ function Sidebar({ isOpen, toggleSidebar, sidebarRef }) {
         <button className="page_btn" onClick={handleMapClick}>
           지도에서 찾기
         </button>
-        <button className="page_btn" onClick={handleEnrollClick}>
+        {/* <button className="page_btn" onClick={handleEnrollClick}>
           신규 등록하기
-        </button>
+        </button> */}
         <button className="page_btn" onClick={handleAdminClick}>
           정보 수정하기
         </button>
