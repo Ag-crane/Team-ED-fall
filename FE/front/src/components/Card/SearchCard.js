@@ -3,9 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/components/Card/SearchCard.css";
 
-const SearchCard = ({ name, fullAddress, imageUrl }) => {
+const SearchCard = ({ name, fullAddress, imageUrl, onClick }) => {
+
+  const handleClick = () => {
+    onClick();
+  };
+
   return (
-    <div className="search_container">
+    <div className="search_container" onClick={handleClick}>
       <div className="search_title_box">
         <div className="search_card1">
           <div className="search_card_title">{name}</div>

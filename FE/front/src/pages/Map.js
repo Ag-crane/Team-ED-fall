@@ -151,6 +151,7 @@ function Map() {
         locate={location.fullAddress}
         content={<img src={location.imageUrl} alt="사진이 없습니다." />}
         rating={location.visitorReviewScore}
+        onClick={() => handleMarkerClick(location)}
       />
     ));
   };
@@ -193,16 +194,16 @@ function Map() {
 
       <Modal isOpen={!!selectedLocation} onClose={handleModalClose}>
         {selectedLocation && (
-          <div class="popup">
-            <div class="popup-head">
-              <span class="head-title">Team ED</span>
+          <div className="popup">
+            <div className="popup-head">
+              <span className="head-title">Team ED</span>
             </div>
-            <div class="popup-body">
-              <div class="body-content">
-                <div class="body-titlebox">
+            <div className="popup-body">
+              <div className="body-content">
+                <div className="body-titlebox">
                   <h1>{selectedLocation.name}</h1>
                 </div>
-                <div class="body-contentbox">
+                <div className="body-contentbox">
                   <div className="modal-img-box">
                     <img
                       className="modal-image"

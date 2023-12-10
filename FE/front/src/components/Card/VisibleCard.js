@@ -3,9 +3,14 @@ import "../../styles/components/Card/VisibleCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
-function VisibleCard({ title, content, locate }) {
+function VisibleCard({ title, content, locate, onClick }) {
+
+  const handleClick = () => {
+    onClick();
+  };
+
   return (
-    <div className="container">
+    <div className="container" onClick={handleClick}>
       <div className="title_box">
         <div className="card1">
           <div className="card_title">{title}</div>
