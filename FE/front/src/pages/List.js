@@ -286,13 +286,13 @@ function List() {
       <Header />
       <div className="filter-container">
         <Filter
-          optionLabel="지역 선택"
+          optionLabel="서울 전체"
           options={regions}
           onChange={handleFilterChange}
         />
         <div className="sort_filter">
           <Filter
-            optionLabel="정렬 선택"
+            optionLabel="이름순"
             options={sort}
             onChange={handleSortChange}
           />
@@ -306,6 +306,8 @@ function List() {
           page={currentPage}
           onChange={handlePageChange}
         />
+
+
       </div>
       {showLoginModal && (
         <div class="modal-container" onClick={closeModal}>

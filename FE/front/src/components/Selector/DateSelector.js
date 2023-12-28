@@ -36,6 +36,7 @@ const CalendarContainer = styled.div`
   .react-datepicker {
     width: 360px;
     padding: 10px 0px;
+    border-radius: 0.8rem;
   }
   .react-datepicker__month-container {
     float: none;
