@@ -21,49 +21,64 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/f92d4c1f-6aee-4682-ba39-1763f1fed945" width="800" alt="검색">
 </p>
+
 - 지역, 날짜, 시간을 선택하여 예약 가능한 룸을 한 번에 검색할 수 있다.
-- 검색 결과는 카드 형태로 표시되며, 각 카드에 룸 정보와 가격이 포함되어 빠르게 비교 가능하다. 클릭 시 예약 페이지로 바로 이동할 수 있다.
+- 검색 결과는 카드 형태로 표시되며, 각 카드에 룸 정보와 가격 정보가 있어 빠르게 비교할 수 있다.
+- 클릭 시 예약 페이지로 바로 이동할 수 있다.
 
 #### 2. 합주실 목록과 상세 정보 제공
 <p align="center">
   <img src="https://github.com/user-attachments/assets/f9321aaa-c138-4a14-8377-bef649a50db4" width="800" alt="검색 gif">
 </p>
+
 - 서울시 내 전체 합주실 정보를 제공하며, 각 합주실 카드 클릭 시 상세 정보를 확인할 수 있다.
+  
 <div align="center" style="display: flex; justify-content: center; gap: 10px;">
   <img src="https://github.com/user-attachments/assets/3a376ba8-e879-4082-abb9-99920d478bfa" width="400" alt="정렬 gif">
   <img src="https://github.com/user-attachments/assets/94c2829a-8964-4902-aaf6-590e918e2a5a" width="400" alt="필터 gif">
 </div>
 
-- 이름순/평점순 정렬 기능, 지역(구) 필터링 기능이 있다.
+- 이름순(default)/평점순 정렬 기능, 지역(구) 필터링 기능이 있다.
   
 #### 3. 합주실 지도 기능
-- 지도를 통해 위치를 검색하고, 현재 위치에서 가까운 합주실을 찾을 수 있다. 지도에 표시된 합주실은 카드 형태로 출력되어 상세 정보를 확인할 수 있다.
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/811e344b-f97d-4eca-b83d-51bb52db5eb5" width="800" alt="지도 gif">
 </p>
 
+- 현재 위치를 기반으로 지도를 움직여 가까운 합주실을 찾을 수 있다.
+- 지도에 표시된 합주실은 하단에 카드 형태로 출력되어 상세 정보를 확인할 수 있다.
+
 #### 4. 사용자 로그인 및 즐겨찾기 기능
 - 사용자는 사이드바를 통해 페이지를 이동한다.
 - 게스트 모드로 사이트를 이용할 수 있으며, 카카오 소셜로그인을 제공한다.
+  
 <div align="center" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
   <img src="https://github.com/user-attachments/assets/d7bc4fae-9d65-4186-abe9-30f2e183754b" width="200" alt="사이드바 1 gif">
   <img src="https://github.com/user-attachments/assets/7a91947b-10e7-4acd-9d03-a508e087f863" width="200" alt="사이드바 2 gif">
 </div>
+
 - 로그인을 해야 즐겨찾기 기능, 신규 합주실 등록, 정보 수정(관리자용) 기능을 이용할 수 있다.
+  
 <p align="center">
   <img src="https://github.com/user-attachments/assets/de998ef9-26fa-4960-a7b4-495da6aee4c5" width="400" alt="로그인 모달 gif">
 </p>
+
 - 로그인 후 각 합주실 카드의 하트 아이콘을 눌러 즐겨찾기 기능을 이용할 수 있다.
+  
 <p align="center">
   <img width="464" alt="좋아요" src="https://github.com/user-attachments/assets/c64c7c84-172e-4fd0-85ee-9c52cee6e191">
 </p>
-- 즐겨찾기로 목록은 마이페이지에서 확인할 수 있다.
+
+- 즐겨찾기 목록은 마이페이지에서 확인할 수 있다.
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/fff2517d-0684-42a0-9b1d-cad77706422b" width="800" alt="즐겨찾기 gif">
+  <img src="https://github.com/user-attachments/assets/fff2517d-0684-42a0-9b1d-cad77706422b" width="400" alt="즐겨찾기 gif">
 </p>
 
 #### 5. 관리자 페이지
 - 합주실 공급자는 로그인 후 합주실 정보를 직접 관리할 수 있다.
+  
 <p align="center">
   <img src="https://github.com/user-attachments/assets/d6df60c2-0812-4ba3-bb61-f5e26cc044c2" width="800" alt="관리자 gif">
 </p>
